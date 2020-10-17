@@ -1,0 +1,26 @@
+{
+  "name": "noojs",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node ./src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chenshenhai/noojs.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chenshenhai/noojs/issues"
+  },
+  "homepage": "https://github.com/chenshenhai/noojs#readme",
+  "devDependencies": {
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "koa": "^2.13.0"
+  }
+}
