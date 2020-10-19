@@ -1,0 +1,33 @@
+{
+  "createTime": 1602947075127,
+  
+  "adminServer": {
+    "port": 8002
+  },
+  "adminThemes": [
+    {
+      "name": "admin",
+      "configLink": "./admin_themes/"
+    }
+  ],
+  "portalServer": {
+    "port": 8001
+  },
+  "portalThemes": [
+    {
+      "name": "portal",
+      "configLink": "./portal_themes/"
+    }
+  ],
+  
+  "database": {
+    "type": "mysql",
+    "config": {
+      "hostname": "127.0.0.1",
+      "port": 3306,
+      "username": "root",
+      "password": "abc123def",
+      "database": "dp_demo"
+    }
+  }
+}
