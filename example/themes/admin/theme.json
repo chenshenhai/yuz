@@ -1,0 +1,15 @@
+{
+  "name": "admin",
+  "pages": [
+    "home",
+    "setting"
+  ],
+  "assets": [
+
+  ],
+  "build": {
+    "external": {
+      
+    }
+  }
+}
