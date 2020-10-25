@@ -1,0 +1,18 @@
+{
+  "name": "admin",
+  "pages": [
+    "home",
+    "setting"
+  ],
+  "assets": [
+
+  ],
+  "build": {
+    "external": {
+      "antd": {
+        "js": "antd/dist/antd.js",
+        "css": "antd/dist/antd.css"
+      }
+    }
+  }
+}
