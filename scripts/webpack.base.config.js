@@ -2,11 +2,11 @@
 const path = require('path');
 
 const srcResolve = function (file) {
-  return path.join(__dirname, '..', '..', 'src', file);
+  return path.join(__dirname, '..', 'src', file);
 };
 
 const distResolve = function (file) {
-  return path.join(__dirname, '..', '..', 'dist', file);
+  return path.join(__dirname, '..', 'dist', file);
 };
 
 module.exports = {

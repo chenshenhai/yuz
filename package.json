@@ -5,12 +5,10 @@
   "main": "index.js",
   "bin": "bin/noo.js",
   "scripts": {
-    "cli:start": "ts-node ./src/cli/",
+    "cli:build": "node ./bin/noo.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit tests/**/*.test.ts",
-    "dev:webpack": "webpack --watch --config scripts/webpack/webpack.dev.config.js",
-    "build:webpack": "webpack -c scripts/webpack/webpack.base.config.js",
-    "build": "rollup -c ./scripts/rollup/rollup.config.js",
-    "dev": "rollup -w -c ./scripts/rollup/rollup.config.js"
+    "dev": "webpack --watch --config scripts/webpack.dev.config.js",
+    "build": "webpack -c scripts/webpack.base.config.js"
   },
   "repository": {
     "type": "git",
@@ -23,15 +21,12 @@
   },
   "homepage": "https://github.com/chenshenhai/noojs#readme",
   "devDependencies": {
-    "@rollup/plugin-buble": "^0.21.3",
-    "@rollup/plugin-typescript": "^6.0.0",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.3",
     "@types/should": "^13.0.0",
     "@types/supertest": "^2.0.10",
     "chai": "^4.2.0",
     "mocha": "^8.2.0",
-    "rollup": "^2.32.1",
     "should": "^13.2.3",
     "supertest": "^5.0.0",
     "ts-loader": "^8.0.6",

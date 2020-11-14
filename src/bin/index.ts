@@ -1,7 +1,8 @@
+import path from 'path';
 import { program } from 'commander';
 import { version } from '../../package.json';
 import { runServer } from './serve';
-import { runDevTheme } from './dev';
+import { runDevTheme, runBuildTheme } from './dev';
 
 program
     .version(version, '-v, --version')
@@ -12,6 +13,7 @@ program
   .action((entry, cmd) => {
     // TODO
     console.log('build ========', entry, cmd);
+    runBuildTheme(entry);
   })
 
 program

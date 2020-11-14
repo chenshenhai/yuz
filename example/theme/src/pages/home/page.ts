@@ -1,7 +1,5 @@
-import Page from ".";
-
 ThemePage({
-  onLoad() {
-
+  onLoad(ctx: any) {
+    return;
   }
 })
