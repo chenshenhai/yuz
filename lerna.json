@@ -1,0 +1,19 @@
+{
+  "packages": [
+    "packages/noojs"
+  ],
+  "command": {
+    "version": {
+      "exact": true
+    },
+    "publish": {
+      "npmClient": "npm",
+      "allowBranch": [
+        "main",
+        "dev"
+      ],
+      "registry": "https://registry.npmjs.org/"
+    }
+  },
+  "version": "0.0.2"
+}

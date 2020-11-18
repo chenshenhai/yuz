@@ -1,48 +1,7 @@
 {
-  "name": "noojs",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "bin": "bin/noo.js",
-  "scripts": {
-    "cli:build": "node ./bin/noo.js build ./example/theme",
-    "test": "mocha -r ts-node/register --exit tests/**/*.test.ts",
-    "dev": "webpack --watch --config scripts/webpack.dev.config.js",
-    "build": "webpack -c scripts/webpack.base.config.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/chenshenhai/noojs.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/chenshenhai/noojs/issues"
-  },
-  "homepage": "https://github.com/chenshenhai/noojs#readme",
+  "name": "root",
+  "private": true,
   "devDependencies": {
-    "@types/chai": "^4.2.14",
-    "@types/mocha": "^8.0.3",
-    "@types/should": "^13.0.0",
-    "@types/supertest": "^2.0.10",
-    "chai": "^4.2.0",
-    "mocha": "^8.2.0",
-    "should": "^13.2.3",
-    "supertest": "^5.0.0",
-    "ts-loader": "^8.0.6",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3",
-    "webpack-cli": "^4.1.0"
-  },
-  "dependencies": {
-    "@types/koa": "^2.11.5",
-    "commander": "^6.1.0",
-    "koa": "^2.13.0",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^5.2.0",
-    "webpack-merge": "^5.2.0"
-  },
-  "files": [
-    "dist"
-  ]
+    "lerna": "^3.22.1"
+  }
 }
