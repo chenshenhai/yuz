@@ -1,1 +1,1 @@
-console.log('hello @uoo/storage')
+console.log('hello @uoo/storage v0')

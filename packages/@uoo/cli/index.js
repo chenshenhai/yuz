@@ -1,1 +1,1 @@
-console.log('hello @uoo/cli')
+console.log('hello @uoo/cli v0')
