@@ -1,6 +1,6 @@
 {
-  "name": "@uoo/cli",
-  "version": "0.0.1",
+  "name": "uoo-storage",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,5 +11,5 @@
   },
   "author": "",
   "license": "MIT",
-  "gitHead": "7b475391db261b1360e450de9d888574b4e388a1"
+  "gitHead": "8bab6f6dc01323dc38b7b5a984ee4c5cd132d266"
 }

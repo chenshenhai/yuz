@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "bin": "bin/uoo.js",
+  "bin": "dist/bin/uoo.js",
   "scripts": {
     "cli:build": "node ./bin/uoo.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit tests/**/*.test.ts",

@@ -1,7 +1,8 @@
 {
   "packages": [
-    "packages/@uoo/storage",
-    "packages/@uoo/cli"
+    "packages/uoojs",
+    "packages/uoo-storage",
+    "packages/uoo-cli"
   ],
   "command": {
     "version": {
@@ -16,5 +17,5 @@
       "registry": "https://registry.npmjs.org/"
     }
   },
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
