@@ -12,7 +12,7 @@ const distResolve = function (file) {
 module.exports = {
   target: 'node',
   entry: {
-    'bin/noo': srcResolve('bin/index.ts'),
+    'bin/uoo': srcResolve('bin/index.ts'),
   },
   output: {
     path: distResolve(''),

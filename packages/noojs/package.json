@@ -1,25 +1,25 @@
 {
-  "name": "noojs",
+  "name": "uoojs",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "bin": "bin/noo.js",
+  "bin": "bin/uoo.js",
   "scripts": {
-    "cli:build": "node ./bin/noo.js build ./example/theme",
+    "cli:build": "node ./bin/uoo.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit tests/**/*.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chenshenhai/noojs.git"
+    "url": "git+https://github.com/chenshenhai/uoojs.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chenshenhai/noojs/issues"
+    "url": "https://github.com/chenshenhai/uoojs/issues"
   },
-  "homepage": "https://github.com/chenshenhai/noojs#readme",
+  "homepage": "https://github.com/chenshenhai/uoojs#readme",
   "devDependencies": {
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.3",
