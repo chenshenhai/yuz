@@ -2,7 +2,7 @@ import 'mocha';
 import should from 'should';
 import supertest from 'supertest';
 import chai from 'chai';
-import { ThemeServer } from './../../../src/core/theme/theme_server';
+import { ThemeServer } from './../../src/theme/theme_server';
 
 // describe('core/theme/theme_server', function () {
 //   it('001:01', function () {

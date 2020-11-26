@@ -4,9 +4,9 @@ import should from 'should';
 // import supertest from 'supertest';
 // import chai from 'chai';
 
-import { ProjectLoader } from './../../../src/core/theme/project_loader';
+import { ProjectLoader } from './../../src/theme/project_loader';
 
-const projectBaseDir = path.join(__dirname, '..', '..', '..', 'example', 'project')
+const projectBaseDir = path.join(__dirname, '..', '..', 'example', 'project')
 
 describe('core/theme/project_loader', function () {
   it('ProjectLoader.getConfig()', function () {
