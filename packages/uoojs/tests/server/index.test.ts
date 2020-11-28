@@ -17,13 +17,12 @@ describe('core/server/index', function () {
       srcDir, 
       distDir,
     }).then((res) => {
-      console.log('-------- res ------');
       
       const themeServer = new ThemeServer({ 
         port: 3000,
         themeDistDir: path.join(__dirname, 'theme', 'dist')
       });
-      const app = themeServer.getApp();
+      const app = themeServer.getServerApp();
       const expect = chai.expect;
       const request = supertest( app.listen() );
 

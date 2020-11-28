@@ -1,87 +1,68 @@
 import * as Koa from 'koa';
 import Router from '@koa/router';
 import next from 'next';
-const Application = Koa.default;
 
+const Server = Koa.default;
 
-interface TypeServer {
-  start: () => Promise<void>
+export interface TypeThemeServer {
+  start: () => Promise<void>,
+  getServerApp: () => Koa
 }
 
-interface TypeServerOpts {
+export interface TypeServerOpts {
   port: number;
   themeDistDir: string;
 }
 
-enum ThemeServerStatus {
-  RUNNING = 'RUNNING',
-  FREE = 'FREE',
-}
+export class ThemeServer implements TypeThemeServer {
 
-export class ThemeServer implements TypeServer {
   private _opts: TypeServerOpts;
-  private _status: ThemeServerStatus;
-  private _app: Koa;
+  private _appNext: any;
+  private _serverApp: any;
 
   constructor(opts: TypeServerOpts) {
     this._opts = opts;
-    this._status = ThemeServerStatus.FREE;
-    const app = new Application();
-    this._app = app;
+    this._appNext = next({ dev: false, conf: {
+      distDir: opts.themeDistDir,
+      basePath: '/page'
+    } });
+    this._serverApp = new Server();
   }
 
   start(): Promise<void> {
-    const port: number = this._opts.port;
+    const { port } = this._opts;
+    const appNext = this._appNext;
+    const server = this._serverApp;
+    const handle = appNext.getRequestHandler()
     return new Promise((resolve, reject) => {
-      try {
-        this._app.listen(port, () => {
+      appNext.prepare().then(() => {
+        const router = new Router()
+      
+        router.get('/page/:pageName', async (ctx) => {
+          const { pageName } = ctx.params;
+          await appNext.render(ctx.req, ctx.res, `/${pageName}`, ctx.query)
+          ctx.respond = false
+        })
+      
+        router.all('(.*)', async (ctx) => {
+          await handle(ctx.req, ctx.res)
+          ctx.respond = false
+        })
+      
+        server.use(async (ctx: any, next: Function) => {
+          ctx.res.statusCode = 200
+          await next()
+        })
+      
+        server.use(router.routes())
+        server.listen(port, () => {
           resolve();
         })
-      } catch (err) {
-        reject(err);
-      }
-    });
+      }).catch(reject)
+    })
   }
 
-  getApp() {
-    return this._app;
-  }
-
-  private _initApp() {
-    const app = this._app;
-    const { themeDistDir } = this._opts;
-    const appNext = next({
-      dev: false,
-      conf: {
-        distDir: themeDistDir,
-        basePath: '/page',
-      }
-    })
-    const handle = appNext.getRequestHandler()
-    const router = new Router();
-
-    router.get('/page/:pageName', async (ctx: any, next: Function) => {
-      const { pageName = '' } = ctx.params;
-      await appNext.render(ctx.req, ctx.res, `/page/${pageName}`, ctx.query)
-      ctx.respond = false
-    });
-
-    router.get('/', async (ctx: any, next: Function) => {
-      ctx.body = 'hello uoojs'
-    });
-
-    app.use(async (ctx, next) => {
-      ctx.res.statusCode = 200
-      await next()
-    })
-  
-    app.use(router.routes())
-
-    app.use(async (ctx: Koa.Context, next: Koa.Next) => {
-      if (ctx.path === '/server/status') {
-        ctx.body = 'RUNNING';
-      }
-      await next();
-    });
+  getServerApp() {
+    return this._serverApp;
   }
 }

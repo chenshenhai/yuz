@@ -13,6 +13,7 @@ module.exports = {
   target: 'node',
   entry: {
     'bin/uoo': srcResolve('bin/index.ts'),
+    'index': srcResolve('src/index.ts'),
   },
   output: {
     path: distResolve(''),

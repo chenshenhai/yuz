@@ -12,7 +12,7 @@ export function buildThemeAsync(opts: TypeBuildThemeOptions) {
     // @ts-ignore
     nextBuild(srcDir, {
       distDir: distDir,
-      basePath: '/page',
+      // basePath: '/page',
     }).then(resolve).catch(reject);
   })
 }
