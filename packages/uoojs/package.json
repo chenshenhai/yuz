@@ -8,7 +8,9 @@
     "cli:build": "node ./bin/uoo.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit tests/**/*.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
-    "build": "webpack -c scripts/webpack.base.config.js"
+    "build": "webpack -c scripts/webpack.base.config.js",
+    "example:server": "ts-node example/server/index.ts",
+    "example:builder": "ts-node example/builder/index.ts"
   },
   "repository": {
     "type": "git",

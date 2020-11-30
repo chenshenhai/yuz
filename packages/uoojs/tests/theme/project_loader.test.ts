@@ -8,7 +8,7 @@ import { ProjectLoader } from './../../src/theme/project_loader';
 
 const projectBaseDir = path.join(__dirname, '..', '..', 'example', 'project')
 
-describe('core/theme/project_loader', function () {
+describe('src/theme/project_loader', function () {
   it('ProjectLoader.getConfig()', function () {
     const loader = new ProjectLoader({ baseDir: projectBaseDir });
     const config = loader.getConfig();

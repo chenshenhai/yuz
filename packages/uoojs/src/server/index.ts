@@ -4,9 +4,14 @@ import next from 'next';
 
 const Server = Koa.default;
 
+export enum TypeServerStatus {
+  HAS_INITED = 'hasInited',
+  NULL = 'null'
+}
+
 export interface TypeThemeServer {
   start: () => Promise<void>,
-  getServerApp: () => Koa
+  getServerAppAsync: () => Promise<Koa>
 }
 
 export interface TypeServerOpts {
@@ -19,8 +24,10 @@ export class ThemeServer implements TypeThemeServer {
   private _opts: TypeServerOpts;
   private _appNext: any;
   private _serverApp: any;
+  private _status: TypeServerStatus;
 
   constructor(opts: TypeServerOpts) {
+    this._status = TypeServerStatus.NULL;
     this._opts = opts;
     this._appNext = next({ dev: false, conf: {
       distDir: opts.themeDistDir,
@@ -31,6 +38,27 @@ export class ThemeServer implements TypeThemeServer {
 
   start(): Promise<void> {
     const { port } = this._opts;
+    return new Promise((resolve, reject) => {
+      this._initAppAsync().then(() => {
+        this._serverApp.listen(port, () => {
+          resolve();
+        })
+      }).catch(reject);
+    });
+  }
+
+  getServerAppAsync(): Promise<Koa> {
+    return new Promise((resolve, reject) => {
+      this._initAppAsync().then(() => {
+        resolve(this._serverApp)
+      }).catch(reject);
+    })
+  }
+
+  private _initAppAsync(): Promise<void> {
+    if (this._status === TypeServerStatus.HAS_INITED) {
+      return Promise.resolve();
+    }
     const appNext = this._appNext;
     const server = this._serverApp;
     const handle = appNext.getRequestHandler()
@@ -54,15 +82,11 @@ export class ThemeServer implements TypeThemeServer {
           await next()
         })
       
-        server.use(router.routes())
-        server.listen(port, () => {
-          resolve();
-        })
+        server.use(router.routes());
+
+        this._status = TypeServerStatus.HAS_INITED;
+        resolve();
       }).catch(reject)
     })
-  }
-
-  getServerApp() {
-    return this._serverApp;
   }
 }

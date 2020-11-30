@@ -6,7 +6,7 @@ import should from 'should';
 
 import { buildThemeAsync } from '../../src/builder';
 
-describe('core/builder/index', function () {
+describe('src/builder/index', function () {
 
   it('builder.buildThemeAsync()', function (done) {
     this.timeout(60000);

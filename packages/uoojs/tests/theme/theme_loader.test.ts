@@ -8,7 +8,7 @@ import { ThemeLoader } from '../../src/theme/theme_loader';
 
 const themeBaseDir = path.join(__dirname, '..', '..', 'example', 'theme')
 
-describe('core/theme/theme_loader', function () {
+describe('src/theme/theme_loader', function () {
   it('ThemeLoader.getConfig()', function () {
     const loader = new ThemeLoader({ baseDir: themeBaseDir });
     const config = loader.getConfig();

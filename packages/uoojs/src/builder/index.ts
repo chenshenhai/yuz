@@ -6,7 +6,7 @@ export interface TypeBuildThemeOptions {
   distDir: string;
 }
 
-export function buildThemeAsync(opts: TypeBuildThemeOptions) {
+export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
   const { srcDir, distDir } = opts;
   return new Promise((resolve, reject) => {
     // @ts-ignore
