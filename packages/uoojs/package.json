@@ -10,7 +10,8 @@
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
     "example:server": "ts-node example/server/index.ts",
-    "example:builder": "ts-node example/builder/index.ts"
+    "example:builder": "ts-node example/builder/index.ts",
+    "example:project": "ts-node example/project/index.ts"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "@types/chai": "^4.2.14",
     "@types/koa__router": "^8.0.3",
     "@types/mocha": "^8.0.3",
+    "@types/node": "^14.14.10",
     "@types/should": "^13.0.0",
     "@types/supertest": "^2.0.10",
     "chai": "^4.2.0",

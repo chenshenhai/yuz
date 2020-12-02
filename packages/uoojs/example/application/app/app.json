@@ -1,0 +1,13 @@
+{
+  "name": "app",
+  "theme": {
+    "portal": {
+      "baseDir": ["themes", "portal"],
+      "port": "8001"
+    },
+    "admin": {
+      "baseDir": ["themes", "admin"],
+      "port": "8002"
+    }
+  }
+}
