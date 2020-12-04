@@ -11,7 +11,7 @@ export enum TypeServerStatus {
 }
 
 export interface TypeThemeServer {
-  start: () => Promise<void>,
+  start: () => Promise<number>,
   getServerAppAsync: () => Promise<Koa>
 }
 
@@ -26,6 +26,7 @@ export class ThemeServer implements TypeThemeServer {
   private _appNext: any;
   private _serverApp: any;
   private _status: TypeServerStatus;
+  private _pid: number = -1;
 
   constructor(opts: TypeServerOpts) {
     this._status = TypeServerStatus.NULL;
@@ -40,15 +41,23 @@ export class ThemeServer implements TypeThemeServer {
     this._serverApp = new Server();
   }
 
-  start(): Promise<void> {
+  start(): Promise<number> {
     const { port } = this._opts;
     return new Promise((resolve, reject) => {
       this._initAppAsync().then(() => {
         this._serverApp.listen(port, () => {
-          resolve();
+          const pid: number = process.pid;
+          this._pid = pid;
+          resolve(pid);
         })
       }).catch(reject);
     });
+  }
+
+  close() {
+    if (this._pid > 0) {
+      return process.kill(this._pid);
+    }
   }
 
   getServerAppAsync(): Promise<Koa> {

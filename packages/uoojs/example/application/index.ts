@@ -1,12 +1,16 @@
 import path from 'path';
 import { Application } from '../../src/application';
 
-const appBaseDir = path.join(__dirname, 'app')
+async function main() {
+  const appBaseDir = path.join(__dirname, 'app')
+  const app = new Application({
+    baseDir: appBaseDir,
+  });
+  const result = await app.launch();
+  console.log('result =', result);
+}
 
-const app = new Application({
-  baseDir: appBaseDir,
-});
-app.launch();
+main();
 
 // app.on('launch', () => {
 //   console.log('on launch ...')

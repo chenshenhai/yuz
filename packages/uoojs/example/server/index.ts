@@ -1,12 +1,19 @@
 import path from 'path';
-
 import { ThemeServer } from '../../src/server';
 
-const themeServer = new ThemeServer({
-  port: 3000,
-  themeDistDir: path.join(__dirname, '..', 'builder', 'theme', 'dist') // './example/server/theme/dist',
-});
-
-themeServer.start().then(() => {
+async function main() {
+  const themeServer = new ThemeServer({
+    port: 3000,
+    themeDistDir: path.join(__dirname, '..', 'builder', 'theme', 'dist') // './example/server/theme/dist',
+  });
+  const pid = await themeServer.start();
   console.log(`> The server is starting on http://127.0.0.1:${3000}`)
-}).catch(console.log);
+  console.log('> The process.pid of server is', pid);
+  console.log(`> Waiting close pid:${pid}`);
+  setTimeout(() => {
+    themeServer.close();
+    console.log('> Close Server success!');
+  }, 10000);
+}
+
+main();
