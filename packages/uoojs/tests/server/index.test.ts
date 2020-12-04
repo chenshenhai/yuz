@@ -35,7 +35,7 @@ describe('src/server/index', function () {
 
       const themeServer = new ThemeServer({ 
         port: 3000,
-        themeDistDir: path.join('tests', 'server', 'theme', 'dist'),
+        themeDistDir: path.join(__dirname, 'theme', 'dist'),
       });
 
       themeServer.getServerAppAsync().then((app) => {

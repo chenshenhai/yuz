@@ -4,7 +4,7 @@ import { ThemeServer } from '../../src/server';
 
 const themeServer = new ThemeServer({
   port: 3000,
-  themeDistDir: path.join('example', 'builder', 'theme', 'dist') // './example/server/theme/dist',
+  themeDistDir: path.join(__dirname, '..', 'builder', 'theme', 'dist') // './example/server/theme/dist',
 });
 
 themeServer.start().then(() => {

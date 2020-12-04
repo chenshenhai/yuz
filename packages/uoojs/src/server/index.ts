@@ -1,3 +1,4 @@
+import process from 'process';
 import * as Koa from 'koa';
 import Router from '@koa/router';
 import next from 'next';
@@ -29,8 +30,11 @@ export class ThemeServer implements TypeThemeServer {
   constructor(opts: TypeServerOpts) {
     this._status = TypeServerStatus.NULL;
     this._opts = opts;
+
+    const cwdPath = process.cwd();
+    const nextDistDir = opts.themeDistDir.replace(cwdPath, '');
     this._appNext = next({ dev: false, conf: {
-      distDir: opts.themeDistDir,
+      distDir: nextDistDir,
       basePath: '/page'
     } });
     this._serverApp = new Server();
