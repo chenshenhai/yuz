@@ -5,7 +5,7 @@ import should from 'should';
 import supertest from 'supertest';
 import chai from 'chai';
 
-import { buildThemeAsync } from '../../src/builder';
+import { buildThemeAsync } from '../../src/theme';
 import { ThemeServer } from '../../src/server';
 import { removeFullDir } from '../../src/util/file';
 

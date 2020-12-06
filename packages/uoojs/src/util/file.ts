@@ -25,3 +25,7 @@ export function removeFullDir(dirPath: string) {
 		fs.rmdirSync(dirPath);
 	}
 }
+
+export function makeFullDir() {
+	// TODO
+}

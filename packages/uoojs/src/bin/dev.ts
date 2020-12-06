@@ -1,5 +1,5 @@
 import process from 'process';
-// import { buildTheme } from '../builder';
+// import { buildThemeAsync } from '../theme';
 
 export function runDevTheme() {
   const themeDir = process.cwd();
@@ -7,7 +7,9 @@ export function runDevTheme() {
   console.log('dev: ', themeDir);
 }
 
-// export function runBuildTheme(themeDir: string) {
-//   // const themeDir = process.cwd();
-//   buildTheme(themeDir);
-// }
+export function runBuildTheme(themeDir: string) {
+  // const themeDir = process.cwd();
+  // buildThemeAsync({
+  //   distDir: themeDir
+  // });
+}

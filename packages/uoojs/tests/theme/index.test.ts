@@ -4,11 +4,11 @@ import should from 'should';
 // import supertest from 'supertest';
 // import chai from 'chai';
 
-import { buildThemeAsync } from '../../src/builder';
+import { buildThemeAsync } from '../../src/theme';
 
-describe('src/builder/index', function () {
+describe('src/theme/index', function () {
 
-  it('builder.buildThemeAsync()', function (done) {
+  it('theme.buildThemeAsync()', function (done) {
     this.timeout(60000);
     const srcDir = path.join(__dirname, 'theme_basic', 'src');
     const distDir = path.join('..', 'dist');
@@ -16,7 +16,6 @@ describe('src/builder/index', function () {
       srcDir, 
       distDir,
     }).then((res) => {
-      console.log('-------- res ------');
       should(1).be.deepEqual(1);
       done();
     }).catch((err) => {

@@ -84,6 +84,14 @@ export class ThemeServer implements TypeThemeServer {
           await appNext.render(ctx.req, ctx.res, `/${pageName}`, ctx.query)
           ctx.respond = false
         })
+
+        router.get('/app/info', async (ctx, next) => {
+          ctx.body = {
+            name: 'uoojs',
+            version : '0.x'
+          }
+          await next();
+        })
       
         router.all('(.*)', async (ctx) => {
           await handle(ctx.req, ctx.res)
