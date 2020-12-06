@@ -21,17 +21,17 @@ export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
 
 export interface TypeDevThemeOptions {
   port: number;
-  themeDistDir: string;
-  themeSrcDir: string;
+  distDir: string;
+  srcDir: string;
 }
 
 export function devThemeAsync(opts: TypeDevThemeOptions): Promise<number> {
-  const { port, themeDistDir, themeSrcDir } = opts;
+  const { port, distDir, srcDir } = opts;
   const server = new ThemeServer({
     dev: true,
     port: port,
-    themeDistDir,
-    themeSrcDir,
+    themeDistDir: distDir,
+    themeSrcDir: srcDir,
   });
   return server.start();
 }
