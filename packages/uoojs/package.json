@@ -11,6 +11,7 @@
     "build": "webpack -c scripts/webpack.base.config.js",
     "example:server": "ts-node example/server/index.ts",
     "example:theme:build": "ts-node example/theme_build/index.ts",
+    "example:theme:dev": "ts-node example/theme_dev/index.ts",
     "example:app": "ts-node example/application/index.ts"
   },
   "repository": {

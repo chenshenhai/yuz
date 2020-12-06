@@ -16,8 +16,10 @@ export interface TypeThemeServer {
 }
 
 export interface TypeServerOpts {
+  dev?: boolean,
   port: number;
   themeDistDir: string;
+  themeSrcDir?: string;
 }
 
 export class ThemeServer implements TypeThemeServer {
@@ -27,17 +29,22 @@ export class ThemeServer implements TypeThemeServer {
   private _serverApp: any;
   private _status: TypeServerStatus;
   private _pid: number = -1;
+  private _isDev: boolean = false;
 
   constructor(opts: TypeServerOpts) {
     this._status = TypeServerStatus.NULL;
     this._opts = opts;
-
+    this._isDev = !!opts.dev;
     const cwdPath = process.cwd();
     const nextDistDir = opts.themeDistDir.replace(cwdPath, '');
-    this._appNext = next({ dev: false, conf: {
-      distDir: nextDistDir,
-      basePath: '/page'
-    } });
+    this._appNext = next({
+      dev: this._isDev,
+      dir: opts.themeSrcDir,
+      conf: {
+        distDir: nextDistDir,
+        basePath: '/page'
+      }
+    });
     this._serverApp = new Server();
   }
 
