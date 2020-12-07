@@ -26,6 +26,28 @@ export function removeFullDir(dirPath: string) {
 	}
 }
 
-export function makeFullDir() {
-	// TODO
+export function makeFullDir(dirPath: string) {
+	if (fs.existsSync(dirPath)) {
+		return true;
+	} else {
+		if (makeFullDir(path.dirname(dirPath))) {
+			fs.mkdirSync(dirPath);
+			return true;
+		}
+	}
+}
+
+export function writeJson(filePath: string, json: {[key: string]: any}): void {
+	fs.writeFileSync(filePath, JSON.stringify(json));
+}
+
+export function readJson(filePath: string): {[key: string]: any} | null {
+	const content = fs.readFileSync(filePath, { encoding: 'utf8' });
+	let result : {[key: string]: any} | null = null;
+	try {
+		result = JSON.parse(content);
+	} catch (err) {
+		console.log(err);
+	}
+	return result;
 }
