@@ -1,7 +1,61 @@
 {
-  "name": "root",
-  "private": true,
+  "name": "uoojs",
+  "version": "0.0.2",
+  "description": "",
+  "main": "index.js",
+  "bin": "dist/bin/uoo.js",
+  "scripts": {
+    "cli:build": "node ./bin/uoo.js build ./example/theme",
+    "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
+    "dev": "webpack --watch --config scripts/webpack.dev.config.js",
+    "build": "webpack -c scripts/webpack.base.config.js",
+    "example:server": "ts-node example/server/index.ts",
+    "example:theme:build": "ts-node example/theme_build/index.ts",
+    "example:theme:dev": "ts-node example/theme_dev/index.ts",
+    "example:app": "ts-node example/application/index.ts",
+    "example:storage": "ts-node example/storage/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chenshenhai/uoojs.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chenshenhai/uoojs/issues"
+  },
+  "homepage": "https://github.com/chenshenhai/uoojs#readme",
   "devDependencies": {
-    "lerna": "^3.22.1"
-  }
+    "@types/chai": "^4.2.14",
+    "@types/koa__router": "^8.0.3",
+    "@types/md5": "^2.2.1",
+    "@types/mocha": "^8.0.3",
+    "@types/node": "^14.14.10",
+    "@types/should": "^13.0.0",
+    "@types/supertest": "^2.0.10",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0",
+    "should": "^13.2.3",
+    "supertest": "^5.0.0",
+    "ts-loader": "^8.0.6",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3",
+    "webpack-cli": "^4.1.0"
+  },
+  "dependencies": {
+    "@koa/router": "^10.0.0",
+    "@types/koa": "^2.11.5",
+    "commander": "^6.1.0",
+    "koa": "^2.13.0",
+    "md5": "^2.3.0",
+    "next": "^10.0.3",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^5.2.0",
+    "webpack-merge": "^5.2.0"
+  },
+  "files": [
+    "dist"
+  ]
 }
