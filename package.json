@@ -6,7 +6,8 @@
   "bin": "dist/bin/uoo.js",
   "scripts": {
     "cli:build": "node ./bin/uoo.js build ./example/theme",
-    "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
+    "test": "nyc --reporter=text mocha -r ts-node/register --exit __tests__/**/*.test.ts",
+    "test:cov-html": "nyc --reporter=html mocha -r ts-node/register --exit __tests__/**/*.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
     "example:server": "ts-node example/server/index.ts",
@@ -35,6 +36,7 @@
     "@types/supertest": "^2.0.10",
     "chai": "^4.2.0",
     "mocha": "^8.2.0",
+    "nyc": "^15.1.0",
     "should": "^13.2.3",
     "supertest": "^5.0.0",
     "ts-loader": "^8.0.6",
