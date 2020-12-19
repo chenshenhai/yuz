@@ -1,6 +1,19 @@
-import path from 'path';
+// import path from 'path';
+// @ts-ignore
+import withLess from '@zeit/next-less';
 import nextBuild from 'next/dist/build';
 import { ThemeServer } from './../server';
+
+
+const nextConfig = {
+  // ...withLess({
+  //   cssModules: true,
+  //   cssLoaderOptions: {
+  //     importLoaders: 1,
+  //     localIdentName: "[local]___[hash:base64:5]",
+  //   }
+  // })
+}
 
 export interface TypeBuildThemeOptions {
   srcDir: string;
@@ -13,6 +26,7 @@ export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
     // @ts-ignore
     nextBuild(srcDir, {
       distDir: distDir,
+      nextConfig: nextConfig,
       // basePath: '/page',
     }).then(resolve).catch(reject);
   })
@@ -30,6 +44,7 @@ export function devThemeAsync(opts: TypeDevThemeOptions): Promise<number> {
   const server = new ThemeServer({
     dev: true,
     port: port,
+    nextConfig: nextConfig,
     themeDistDir: distDir,
     themeSrcDir: srcDir,
   });

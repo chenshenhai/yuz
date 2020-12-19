@@ -1,5 +1,5 @@
 
-import './style.css'
+import './../style/index.css';
 
 function _App({ Component, pageProps }) {
   return <Component {...pageProps} />

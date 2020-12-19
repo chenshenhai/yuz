@@ -1,4 +1,4 @@
-import Hello from '../../component/hello';
+import Hello from '../../components/hello';
 import css from './index.module.css';
 
 export default function Page() {

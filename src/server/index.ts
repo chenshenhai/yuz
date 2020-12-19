@@ -20,6 +20,7 @@ export interface TypeServerOpts {
   port: number;
   themeDistDir: string;
   themeSrcDir?: string;
+  nextConfig?: any;
 }
 
 export class ThemeServer implements TypeThemeServer {
@@ -41,8 +42,11 @@ export class ThemeServer implements TypeThemeServer {
       dev: this._isDev,
       dir: opts.themeSrcDir,
       conf: {
-        distDir: nextDistDir,
-        basePath: '/page'
+        ...opts.nextConfig,
+        ...{
+          distDir: nextDistDir,
+          basePath: '/page'
+        }
       }
     });
     this._serverApp = new Server();
