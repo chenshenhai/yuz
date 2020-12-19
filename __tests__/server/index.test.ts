@@ -1,23 +1,24 @@
+import 'mocha';
 import path from 'path';
 import fs from 'fs';
-import 'mocha';
 import should from 'should';
 import supertest from 'supertest';
 import chai from 'chai';
 
-import { buildThemeAsync } from '../../src/theme';
-import { ThemeServer } from '../../src/server';
+import nextBuild from 'next/dist/build';
+import { ThemeServer } from './../../src/server';
 import { removeFullDir } from '../../src/util/file';
+
 
 describe('src/server/index', function () {
 
   it('server.ThemeServer', function (done) {
     this.timeout(60000 * 1);
-    const srcDir = path.join(__dirname, 'theme', 'src');
-    const distDir = path.join('..', '.next');
+    const baseDir = path.join(__dirname, 'theme');
 
-    const fullDistDir = path.join(__dirname, 'theme', '.next');
-    const newfullDistDir = path.join(__dirname, 'theme', 'dist');
+    const srcDir = path.join(baseDir, 'src');
+    const fullDistDir = path.join(baseDir, '.next');
+    const newfullDistDir = path.join(baseDir, 'dist');
 
     if (fs.existsSync(fullDistDir)) {
       removeFullDir(fullDistDir);
@@ -26,16 +27,19 @@ describe('src/server/index', function () {
       removeFullDir(newfullDistDir);
     }
 
-    buildThemeAsync({
-      srcDir, 
-      distDir,
+    // @ts-ignore
+    nextBuild(srcDir, {
+      distDir: path.join('..', '.next'),
+      nextConfig: {},
+      // basePath: '/page',
     }).then((res) => {
+
 
       fs.renameSync(fullDistDir, newfullDistDir);
 
       const themeServer = new ThemeServer({ 
         port: 3000,
-        themeDistDir: path.join(__dirname, 'theme', 'dist'),
+        themeDistDir: newfullDistDir,
       });
 
       themeServer.getServerAppAsync().then((app) => {
@@ -52,7 +56,10 @@ describe('src/server/index', function () {
           should(res.text.indexOf('<div>This is A page</div>') > 0).be.equal(true);
           done();
         });
-      }).catch(done);
+      }).catch((err) => {
+        console.log(err);
+        done(err);
+      });
     }).catch((err) => {
       console.log(err);
       done(err);

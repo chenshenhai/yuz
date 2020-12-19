@@ -1,8 +1,9 @@
-// import path from 'path';
+import path from 'path';
 // @ts-ignore
 import withLess from '@zeit/next-less';
 import nextBuild from 'next/dist/build';
 import { ThemeServer } from './../server';
+import { TypeBuildThemeOptions, TypeDevThemeOptions } from './../types';
 
 
 const nextConfig = {
@@ -15,13 +16,11 @@ const nextConfig = {
   // })
 }
 
-export interface TypeBuildThemeOptions {
-  srcDir: string;
-  distDir: string;
-}
 
 export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
-  const { srcDir, distDir } = opts;
+  const { baseDir } = opts;
+  const srcDir = path.join(baseDir, 'src');
+  const distDir = path.join('..', 'dist');
   return new Promise((resolve, reject) => {
     // @ts-ignore
     nextBuild(srcDir, {
@@ -33,14 +32,10 @@ export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
 }
 
 
-export interface TypeDevThemeOptions {
-  port: number;
-  distDir: string;
-  srcDir: string;
-}
-
 export function devThemeAsync(opts: TypeDevThemeOptions): Promise<number> {
-  const { port, distDir, srcDir } = opts;
+  const { port, baseDir } = opts;
+  const srcDir = path.join(baseDir, 'src');
+  const distDir = path.join('..', 'dist');
   const server = new ThemeServer({
     dev: true,
     port: port,
@@ -49,4 +44,8 @@ export function devThemeAsync(opts: TypeDevThemeOptions): Promise<number> {
     themeSrcDir: srcDir,
   });
   return server.start();
+}
+
+function loadThemeConfig() {
+
 }

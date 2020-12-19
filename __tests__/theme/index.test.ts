@@ -11,12 +11,8 @@ describe('src/theme/index', function () {
 
   it('theme.buildThemeAsync()', function (done) {
     this.timeout(60000);
-    const srcDir = path.join(__dirname, 'theme_basic', 'src');
-    const distDir = path.join('..', 'dist');
-    buildThemeAsync({
-      srcDir, 
-      distDir,
-    }).then((res) => {
+    const baseDir = path.join(__dirname, 'theme_basic');
+    buildThemeAsync({ baseDir }).then((res) => {
       // TODO
       should(1).be.deepEqual(1);
       done();
@@ -29,12 +25,10 @@ describe('src/theme/index', function () {
 
   it('theme.devThemeAsync()', function (done) {
     this.timeout(60000);
-    const srcDir = path.join(__dirname, 'theme_basic', 'src');
-    const distDir = path.join('..', 'dist');
+    const baseDir = path.join(__dirname, 'theme_basic');
     devThemeAsync({
       port: 3001,
-      srcDir, 
-      distDir,
+      baseDir,
     }).then((pid) => {
       // TODO
       should(Number.isInteger(pid)).be.deepEqual(true);

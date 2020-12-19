@@ -8,11 +8,16 @@ const distDir = path.join('..', 'dist');
 
 
 async function main() {
-  const pid = await devThemeAsync({
-    port: 3002,
-    srcDir, distDir
+  const pid1 = await devThemeAsync({
+    port: 8001,
+    baseDir: path.join(__dirname, 'theme', 'src'),
   });
-  console.log('pid =', pid);
+  const pid2 = await devThemeAsync({
+    port: 8002,
+    baseDir: path.join(__dirname, 'theme_less', 'src'),
+  });
+  console.log([pid1, pid2]);
+  
 }
 
 main();
