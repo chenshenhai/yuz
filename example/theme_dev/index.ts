@@ -9,9 +9,8 @@ const distDir = path.join('..', 'dist');
 
 async function main() {
   const pid = await devThemeAsync({
-    port: 3001,
-    themeDistDir: distDir,
-    themeSrcDir: srcDir,
+    port: 3002,
+    srcDir, distDir
   });
   console.log('pid =', pid);
 }
