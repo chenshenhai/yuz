@@ -12,6 +12,7 @@
     "example:server": "ts-node example/server/index.ts",
     "example:theme:build": "ts-node example/theme_build/index.ts",
     "example:theme:dev": "ts-node example/theme_dev/index.ts",
+    "example:theme:dev:less": "ts-node example/theme_dev_less/index.ts",
     "example:app": "ts-node example/application/index.ts",
     "example:storage": "ts-node example/storage/index.ts"
   },
