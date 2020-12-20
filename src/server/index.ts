@@ -71,7 +71,15 @@ export class ThemeServer implements TypeThemeServer {
     const handle = appNext.getRequestHandler()
     return new Promise((resolve, reject) => {
       appNext.prepare().then(() => {
-        const router = new Router()
+        const router = new Router();
+
+        // const api = new Router();
+        // api.get('/api/:name', async (ctx, next) => {
+        //   ctx.body = {
+        //     name: ctx.query
+        //   };
+        //   await next();
+        // });
       
         router.get('/page/:pageName', async (ctx) => {
           const { pageName } = ctx.params;
@@ -86,8 +94,8 @@ export class ThemeServer implements TypeThemeServer {
           }
           await next();
         })
-      
-        router.all('(.*)', async (ctx) => {
+
+        router.all('/page/(.*)', async (ctx) => {
           await handle(ctx.req, ctx.res)
           ctx.respond = false
         })
