@@ -2,26 +2,9 @@ import process from 'process';
 import * as Koa from 'koa';
 import Router from '@koa/router';
 import next from 'next';
+import { TypeServerStatus, TypeThemeServer, TypeServerOpts } from './../types';
 
 const Server = Koa.default;
-
-export enum TypeServerStatus {
-  HAS_INITED = 'hasInited',
-  NULL = 'null'
-}
-
-export interface TypeThemeServer {
-  start: () => Promise<number>,
-  getServerAppAsync: () => Promise<Koa>
-}
-
-export interface TypeServerOpts {
-  dev?: boolean,
-  port: number;
-  themeDistDir: string;
-  themeSrcDir?: string;
-  nextConfig?: any;
-}
 
 export class ThemeServer implements TypeThemeServer {
 

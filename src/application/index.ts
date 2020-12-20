@@ -2,28 +2,8 @@ import path from 'path';
 import { EventEmitter } from 'events';
 import { loadJsonSync } from './../util/file';
 import { ThemeServer } from './../server';
+import { TypeApplicationOptions, TypeApplication,  TypeAppConfig,} from './../types';
 
-export interface TypeApplicationOptions {
-  baseDir: string;
-}
-
-export interface TypeApplication {
-  launch(): void;
-}
-
-export interface TypeAppConfig {
-  name: string;
-  theme: {
-    portal: {
-      baseDirName: string,
-      port: number,
-    },
-    admin: {
-      baseDirName: string,
-      port: number;
-    }
-  }
-}
 
 export class Application extends EventEmitter implements TypeApplication  {
 
