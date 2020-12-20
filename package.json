@@ -12,7 +12,7 @@
     "example:server": "ts-node example/server/index.ts",
     "example:theme:build": "ts-node example/theme_build/index.ts",
     "example:theme:dev": "ts-node example/theme_dev/index.ts",
-    "example:theme:dev:less": "ts-node example/theme_dev_less/index.ts",
+    "example:theme:dev:scss": "ts-node example/theme_dev_scss/index.ts",
     "example:app": "ts-node example/application/index.ts",
     "example:storage": "ts-node example/storage/index.ts"
   },
@@ -47,14 +47,15 @@
   "dependencies": {
     "@koa/router": "^10.0.0",
     "@types/koa": "^2.11.5",
-    "@zeit/next-less": "^1.0.1",
     "commander": "^6.1.0",
+    "fibers": "^5.0.0",
     "koa": "^2.13.0",
-    "less": "^4.0.0",
     "md5": "^2.3.0",
     "next": "^10.0.3",
+    "node-sass": "^5.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "sass": "^1.30.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^5.2.0",
     "webpack-merge": "^5.2.0"

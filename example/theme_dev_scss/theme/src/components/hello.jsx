@@ -1,4 +1,4 @@
-import css from './hello.module.css';
+import css from './hello.module.scss';
 
 export default function Hello() {
   return (

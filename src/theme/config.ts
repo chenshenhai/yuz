@@ -1,6 +1,6 @@
 import path from 'path';
-// @ts-ignore
-import withLess from '@zeit/next-less';
+// // @ts-ignore
+// import withLess from '@zeit/next-less';
 import { TypeThemeConfig } from './../types';
 import { readJson } from './../util/file';
 
@@ -13,14 +13,13 @@ export function loadThemeConfig(baseDir: string): TypeThemeConfig {
 }
 
 export function createNextConfig(config: TypeThemeConfig): {[key: string]: any} {
-  const nextConfig = {
-    // ...withLess({
-    //   cssModules: true,
-    //   cssLoaderOptions: {
-    //     importLoaders: 1,
-    //     localIdentName: "[local]___[hash:base64:5]",
-    //   }
-    // })
+  let nextConfig = {};
+
+  if (config) {
+    // if (config.css === 'less') {
+    //   nextConfig = withLess();
+    // }
   }
+
   return nextConfig;
 }

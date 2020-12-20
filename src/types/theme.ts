@@ -1,7 +1,6 @@
 export type TypeThemeConfig = {
-  name: string,
-  version: string,
-  css: "less",
+  name: string;
+  version: string;
 }
 
 
