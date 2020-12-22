@@ -3,6 +3,7 @@ import * as Koa from 'koa';
 import Router from '@koa/router';
 import next from 'next';
 import { TypeServerStatus, TypeThemeServer, TypeServerOpts } from './../types';
+// import pkg from './../../package.json';
 
 const Server = Koa.default;
 
@@ -73,13 +74,12 @@ export class ThemeServer implements TypeThemeServer {
       appNext.prepare().then(() => {
         const router = new Router();
 
-        // const api = new Router();
-        // api.get('/api/:name', async (ctx, next) => {
-        //   ctx.body = {
-        //     name: ctx.query
-        //   };
-        //   await next();
-        // });
+        router.get('/api/:name', async (ctx, next) => {
+          ctx.body = {
+            params: ctx.params
+          };
+          await next();
+        });
       
         router.get('/page/:pageName', async (ctx) => {
           const { pageName } = ctx.params;
@@ -89,8 +89,8 @@ export class ThemeServer implements TypeThemeServer {
 
         router.get('/app/info', async (ctx, next) => {
           ctx.body = {
-            name: 'uoojs',
-            version : '0.x'
+            // name: pkg.name,
+            // version : pkg.version
           }
           await next();
         })
