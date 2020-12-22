@@ -3,9 +3,9 @@
   "version": "0.0.1-alpha.0",
   "description": "",
   "main": "index.js",
-  "bin": "dist/bin/uoo.js",
+  "bin": "dist/bin/yuz.js",
   "scripts": {
-    "cli:build": "node ./bin/uoo.js build ./example/theme",
+    "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/*.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chenshenhai/uoojs.git"
+    "url": "git+https://github.com/yuzjs/yuz.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chenshenhai/uoojs/issues"
+    "url": "https://github.com/yuzjs/yuz/issues"
   },
-  "homepage": "https://github.com/chenshenhai/uoojs#readme",
+  "homepage": "https://github.com/yuzjs/yuz#readme",
   "devDependencies": {
     "@types/chai": "^4.2.14",
     "@types/koa__router": "^8.0.3",
