@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../dist/bin/yuz.js')
+require('../dist/bin/yuz.js');

@@ -3,7 +3,7 @@
   "version": "0.0.1-alpha.0",
   "description": "",
   "main": "index.js",
-  "bin": "dist/bin/yuz.js",
+  "bin": "bin/yuz.js",
   "scripts": {
     "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/*.test.ts",

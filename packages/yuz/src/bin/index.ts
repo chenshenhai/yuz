@@ -4,10 +4,8 @@ import { version } from '../../package.json';
 import { runServer } from './serve';
 import { runDevTheme, runBuildTheme } from './dev';
 
-program
-    .version(version, '-v, --version')
-    
-
+program.version(version, '-v, --version')
+      
 program
   .command('build [projectDir]')
   .action((entry, cmd) => {

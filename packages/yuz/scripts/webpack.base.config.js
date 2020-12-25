@@ -13,7 +13,7 @@ module.exports = {
   target: 'node',
   entry: {
     'bin/yuz': srcResolve('bin/index.ts'),
-    'index': srcResolve('src/index.ts'),
+    'index': srcResolve('index.ts'),
   },
   output: {
     path: distResolve(''),
