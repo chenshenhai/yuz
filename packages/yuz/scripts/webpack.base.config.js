@@ -1,5 +1,6 @@
   
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 const srcResolve = function (file) {
   return path.join(__dirname, '..', 'src', file);
@@ -30,6 +31,7 @@ module.exports = {
       }
     ]
   },
+  externals: [nodeExternals()],
   plugins: [
    
   ],

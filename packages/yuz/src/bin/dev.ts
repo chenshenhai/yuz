@@ -1,10 +1,9 @@
-import process from 'process';
-// import { buildThemeAsync } from '../theme';
 
-export function runDevTheme() {
-  const themeDir = process.cwd();
-  // buildTheme(themeDir);
-  console.log('dev: ', themeDir);
+import process from 'process';
+import { buildThemeAsync, devThemeAsync } from '../theme';
+
+export function runDevTheme(opts: { baseDir: string, port: number }) {
+  devThemeAsync(opts);
 }
 
 export function runBuildTheme(themeDir: string) {
