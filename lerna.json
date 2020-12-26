@@ -1,7 +1,8 @@
 {
   "packages": [
     "packages/yuz",
-    "packages/yuz-api"
+    "packages/yuz-api",
+    "packages/yuz-theme-portal"
   ],
   "version": "0.0.1-alpha.2"
 }

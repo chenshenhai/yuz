@@ -1,0 +1,18 @@
+{
+  "name": "yuz-theme-portal",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "yuz dev -p 9001 ./"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "yuz": "^0.0.1-alpha.2"
+  },
+  "files": [
+    "dist"
+  ]
+}
