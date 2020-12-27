@@ -7,7 +7,7 @@
   "scripts": {
     "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/*.test.ts",
-    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/reader.test.ts",
+    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/download.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
     "example:server": "ts-node example/server/index.ts",
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/yuzjs/yuz#readme",
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "axios": "^0.21.1",
     "commander": "^6.1.0",
     "fibers": "^5.0.0",
     "koa": "^2.13.0",
