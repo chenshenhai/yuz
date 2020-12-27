@@ -10,10 +10,21 @@ describe('src/reader', function () {
 
     const baseDir = path.join(__dirname, 'md', 'gitbook');
     const result = readGitbookList(baseDir);
-
-    should(1).be.deepEqual(1);
-    
-    // should(fs.existsSync(baseDir)).be.equal(true);
-    // should(result).be.deepEqual({...item, ...{uuid}});
+    should(result).be.deepEqual([{
+      "name": "Readme",
+      "path": path.join(baseDir, "README.md")
+    }, {
+      "name": "001",
+      "path": path.join(baseDir, "./docs/001.md")
+    }, {
+      "name": "002",
+      "path": path.join(baseDir, "./docs/002.md"),
+    }, {
+      "name": "101",
+      "path": path.join(baseDir, "./docs/101.md"),
+    }, {
+      "name": "102",
+      "path": path.join(baseDir, "./docs/102.md")
+    }]);
   });
 });
