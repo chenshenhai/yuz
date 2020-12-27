@@ -7,7 +7,7 @@
   "scripts": {
     "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/*.test.ts",
-    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/gitbook.test.ts",
+    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/loaders.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
     "example:server": "ts-node example/server/index.ts",
@@ -27,8 +27,26 @@
     "url": "https://github.com/yuzjs/yuz/issues"
   },
   "homepage": "https://github.com/yuzjs/yuz#readme",
+  "dependencies": {
+    "@koa/router": "^10.0.0",
+    "commander": "^6.1.0",
+    "fibers": "^5.0.0",
+    "koa": "^2.13.0",
+    "koa-compose": "^4.1.0",
+    "md5": "^2.3.0",
+    "next": "^10.0.3",
+    "node-sass": "^5.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "sass": "^1.30.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^5.2.0",
+    "webpack-merge": "^5.2.0"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.14",
+    "@types/koa": "^2.11.6",
+    "@types/koa-compose": "^3.2.5",
     "@types/koa__router": "^8.0.3",
     "@types/md5": "^2.2.1",
     "@types/mocha": "^8.0.3",
@@ -45,22 +63,6 @@
     "typescript": "^4.0.3",
     "webpack-cli": "^4.1.0",
     "webpack-node-externals": "^2.5.2"
-  },
-  "dependencies": {
-    "@koa/router": "^10.0.0",
-    "@types/koa": "^2.11.5",
-    "commander": "^6.1.0",
-    "fibers": "^5.0.0",
-    "koa": "^2.13.0",
-    "md5": "^2.3.0",
-    "next": "^10.0.3",
-    "node-sass": "^5.0.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "sass": "^1.30.0",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^5.2.0",
-    "webpack-merge": "^5.2.0"
   },
   "files": [
     "dist",
