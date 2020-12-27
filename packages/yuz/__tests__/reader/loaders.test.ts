@@ -5,7 +5,7 @@ import 'mocha';
 import { loadGitbookList } from '../../src/reader/loaders';
 
 
-describe('src/loaders', function () {
+describe('src/reader/loaders', function () {
   it('loadGitbookList', function () {
 
     const baseDir = path.join(__dirname, 'md', 'gitbook');
