@@ -11,7 +11,9 @@ export async function downloadGithubZip(params: {
 }) {
   const { name, repo, version, filePath } = params;
   const url = `https://github.com/${name}/${repo}/archive/${version}.zip`;
-  fs.unlinkSync(filePath);
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+    fs.unlinkSync(filePath);
+  }
   return downloadFile(url, filePath)
 }
 

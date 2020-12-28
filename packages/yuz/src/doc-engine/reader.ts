@@ -3,8 +3,8 @@ import compose from 'koa-compose';
 import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
-import { TypeReader, TypeReadType, TypeReaderStatus, TypeReadList, TypeReaderWriteResult } from './../types';
-import { Storage } from './../storage';
+import { TypeReader, TypeReadType, TypeReaderStatus, TypeReadList, TypeReaderWriteResult } from '../types';
+import { Storage } from '../storage';
 
 export class Reader extends EventEmitter implements TypeReader  {
 

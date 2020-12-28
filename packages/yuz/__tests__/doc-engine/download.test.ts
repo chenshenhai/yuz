@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { downloadGithubZip } from '../../src/reader/download';
+import { downloadGithubZip } from '../../src/doc-engine/download';
 
 
 describe('src/reader/download', function () {

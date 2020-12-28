@@ -31,6 +31,7 @@
     "@koa/router": "^10.0.0",
     "axios": "^0.21.1",
     "commander": "^6.1.0",
+    "extract-zip": "^2.0.1",
     "fibers": "^5.0.0",
     "koa": "^2.13.0",
     "koa-compose": "^4.1.0",

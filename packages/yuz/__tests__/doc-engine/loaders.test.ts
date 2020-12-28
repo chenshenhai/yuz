@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { loadGitbookList } from '../../src/reader/loaders';
+import { loadGitbookList } from '../../src/doc-engine/loaders';
 
 
 describe('src/reader/loaders', function () {

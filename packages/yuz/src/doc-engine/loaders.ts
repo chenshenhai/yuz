@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import { TypeReadList } from './../types';
+import { TypeReadList } from '../types';
 
 export function loadGitbookList(baseDir: string): TypeReadList {
   const summaryPath = path.join(baseDir, 'SUMMARY.md');

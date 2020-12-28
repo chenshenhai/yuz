@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { Reader } from '../../src/reader';
+import { Reader } from '../../src/doc-engine/reader';
 
 
 describe('src/reader/index', function () {
