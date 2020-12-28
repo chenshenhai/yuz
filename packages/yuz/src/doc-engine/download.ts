@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
-import { makeFullDir, removeFullDir } from './../util/file';
+import { makeFullDir, removeFullDir } from '../util/file';
 
 export async function downloadGithubZip(params: {
   name: string,
@@ -18,7 +18,7 @@ export async function downloadGithubZip(params: {
 }
 
 
-async function downloadFile(url: string, filePath: string) {
+export async function downloadFile(url: string, filePath: string) {
   const response = await axios({
     url,
     method: 'GET',
