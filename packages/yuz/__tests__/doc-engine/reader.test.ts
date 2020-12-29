@@ -9,8 +9,8 @@ describe('src/reader/index', function () {
   it('Reader:gitbook', function (done) {
     this.timeout(60000 * 1);
 
-    const baseDir = path.join(__dirname, 'md', 'gitbook');
-    const storageDir = path.join(__dirname, 'dist', 'gitbook');
+    const baseDir = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
+    const storageDir = path.join(__dirname, '..', '__assets__', 'dist', 'reader', 'gitbook');
 
     const reader = new Reader();
     const list = reader.readList(baseDir, { type: 'gitbook' });

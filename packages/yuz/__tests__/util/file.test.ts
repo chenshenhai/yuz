@@ -3,7 +3,7 @@ import 'mocha';
 import should from 'should';
 import { loadJsonSync } from './../../src/util/file';
 
-const projectJsonPath = path.join(__dirname, 'assets', 'app.json');
+const projectJsonPath = path.join(__dirname, '..', '__assets__', 'app.json');
 
 describe('src/util/file', function () {
   it('loadJsonSync()', function () {

@@ -8,7 +8,7 @@ import { loadGitbookList } from '../../src/doc-engine/loaders';
 describe('src/reader/loaders', function () {
   it('loadGitbookList', function () {
 
-    const baseDir = path.join(__dirname, 'md', 'gitbook');
+    const baseDir = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
     const result = loadGitbookList(baseDir);
     should(result).be.deepEqual([{
       "name": "Readme",

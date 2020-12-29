@@ -8,8 +8,8 @@ describe('src/util/zip', function () {
 
   it('zip()', function (done) {
     this.timeout(60000 * 1);
-    const source = path.join(__dirname, 'assets', 'gitbook');
-    const output = path.join(__dirname, 'dist', 'zip', 'gitbook.zip');
+    const source = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
+    const output = path.join(__dirname, '..', '__assets__', 'dist', 'zip',  'gitbook.zip');
     zip(source, output).then((res) => {
       should(res.bytes > 0).be.deepEqual(true)
       done();
@@ -20,8 +20,8 @@ describe('src/util/zip', function () {
 
   it('unzip()', function (done) {
     this.timeout(60000 * 1);
-    const source = path.join(__dirname, 'dist', 'zip', 'gitbook.zip');
-    const output = path.join(__dirname, 'dist', 'unzip', 'gitbook');
+    const source = path.join(__dirname, '..', '__assets__', 'dist', 'zip',  'gitbook.zip');
+    const output = path.join(__dirname, '..', '__assets__', 'dist', 'zip', 'gitbook');
     unzip(source, output).then((res) => {
       should(fs.existsSync(path.join(output, 'README.md'))).be.deepEqual(true)
       done();
