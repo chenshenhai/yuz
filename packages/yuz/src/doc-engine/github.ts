@@ -7,8 +7,9 @@ export async function clone(params: {
   dirPath: string,
 }) {
   const { name, repo, dirPath } = params;
-  const ssh = `git@github.com:${name}/${repo}.git`
+  // const url = `git@github.com:${name}/${repo}.git`;
+  const url = `https://github.com/${name}/${repo}.git`;
   const git: SimpleGit = simpleGit();
-  const result = await git.clone(ssh, dirPath);
+  const result = await git.clone(url, dirPath);
   return result;
 }

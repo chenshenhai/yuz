@@ -5,7 +5,7 @@ import 'mocha';
 import { Reader } from '../../src/doc-engine/reader';
 
 
-describe('src/reader/index', function () {
+describe('src/doc-engine/reader', function () {
   it('Reader:gitbook', function (done) {
     this.timeout(60000 * 1);
 

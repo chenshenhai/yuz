@@ -5,7 +5,7 @@ import 'mocha';
 import { loadGitbookList } from '../../src/doc-engine/loaders';
 
 
-describe('src/reader/loaders', function () {
+describe('src/doc-engine/loaders', function () {
   it('loadGitbookList', function () {
 
     const baseDir = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
