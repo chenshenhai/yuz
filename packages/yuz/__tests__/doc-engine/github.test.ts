@@ -2,21 +2,21 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { cloneRepository, readRepositoryList } from '../../src/doc-engine/github';
+import { cloneRepo, readRepoList, readRepoFileTime, } from '../../src/doc-engine/github';
 import { makeFullDir, removeFullDir } from './../../src/util/file';
 
 
 describe('src/doc-engine/github', function () {
 
-  it('cloneRepository', function (done) {
+  it('cloneRepo', function (done) {
     this.timeout(60000 * 3);
     const localPath = path.join(__dirname, '..', '__assets__', 'dist', 'github', 'example-gitbook');
     if (fs.existsSync(localPath)) {
       removeFullDir(localPath);
     }
     makeFullDir(localPath);
-    cloneRepository({
-      name: 'yuzjs',
+    cloneRepo({
+      user: 'yuzjs',
       repository: 'example-gitbook',
       localPath: localPath,
     }).then((res: any) => {
@@ -25,11 +25,10 @@ describe('src/doc-engine/github', function () {
     }).catch(done)
   });
 
-  it('readRepositoryList', function (done) {
+  it('readRepoList', function (done) {
     this.timeout(60000 * 3);
     const localPath = path.join(__dirname, '..', '__assets__', 'dist', 'github', 'example-gitbook');
-    
-    readRepositoryList({
+    readRepoList({
       localPath: localPath,
     }).then((res: any) => {
       should(res).be.deepEqual([
@@ -44,4 +43,34 @@ describe('src/doc-engine/github', function () {
       done();
     }).catch(done)
   });
+
+
+  it('readRepoFileTime', function (done) {
+    this.timeout(60000 * 3);
+    const localPath = path.join(__dirname, '..', '__assets__', 'dist', 'github', 'example-gitbook');
+    // const localPath = path.join(__dirname, '..', '..', '..', '..', '..', '..', 'xxxx', 'xxxx');
+    readRepoFileTime({
+      localPath: localPath,
+      filePath: 'README.md'
+    }).then((res: any) => {
+      should(parseInt(res.createTime) > 0).be.deepEqual(true);
+      should(parseInt(res.modifiedTime) > 0).be.deepEqual(true);
+      done();
+    }).catch(done)
+  });
+
+
+  // it('readRepoList', function (done) {
+  //   this.timeout(60000 * 3);
+  //   const localPath = path.join(__dirname, '..', '__assets__', 'dist', 'github', 'example-gitbook');
+  //   readRepoRemote({
+  //     localPath: localPath,
+  //   }).then((res: any) => {
+  //     console.log('res =', res);
+  //     should(1).be.deepEqual(1);
+  //     done();
+  //   }).catch(done)
+  // });
+
+  
 });
