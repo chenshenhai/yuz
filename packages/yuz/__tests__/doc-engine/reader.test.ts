@@ -6,12 +6,9 @@ import { Reader } from '../../src/doc-engine/reader';
 
 
 describe('src/doc-engine/reader', function () {
-  it('Reader:gitbook', function (done) {
-    this.timeout(60000 * 1);
 
+  it('Reader:gitbook', function () {
     const baseDir = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
-    const storageDir = path.join(__dirname, '..', '__assets__', 'dist', 'reader', 'gitbook');
-
     const reader = new Reader();
     const list = reader.readList(baseDir, { type: 'gitbook' });
 
@@ -31,33 +28,7 @@ describe('src/doc-engine/reader', function () {
       "name": "102",
       "filePath": path.join(baseDir, "./docs/102.md")
     }]);
-
-    reader.writeListStorage(list, { storagePath: storageDir })
-      .then((result) => {
-        should(result).be.deepEqual({
-          "success": false,
-          "logs": [{
-            "status": "SUCCESS",
-            "path": path.join(baseDir, "README.md")
-          }, {
-            "status": "SUCCESS",
-            "path": path.join(baseDir, "./docs/001.md")
-          }, {
-            "status": "ERROR",
-            "path": path.join(baseDir, "./docs/002.md"),
-          }, {
-            "status": "SUCCESS",
-            "path": path.join(baseDir, "./docs/101.md"),
-          }, {
-            "status": "SUCCESS",
-            "path": path.join(baseDir, "./docs/102.md"),
-          }],
-          "hasError": true
-        });
-        done();
-      }).catch((err) => {
-        done();
-        throw err;
-      });
+    
   });
+
 });
