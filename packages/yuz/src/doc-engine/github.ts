@@ -49,22 +49,10 @@ export async function readRepoFileTime(
 ): Promise<{createTime: string, modifiedTime: string}> {
   const { localPath, filePath } = params;
   const git: SimpleGit = simpleGit({baseDir: localPath});
-  // let modifiedStr: string = await git.raw('log', '-1', '--pretty=format:%at', '--', filePath);
   let timeRes: string = await git.raw('log', '--pretty=format:%at', '--', filePath);
   const times = timeRes.replace(/\r\n/, '\n').split('\n');
   return {
     createTime: times[times.length - 1],
     modifiedTime: times[0],
   };
-}
-
-
-export async function getRepoInfo(params: { localPath: string, }): Promise<TypeGithubDocInfo> {
-  const list: string[] = await readRepoList(params);
-  const info = {
-    user: '',
-    repository: '',
-    src: {} 
-  }
-  return info;
 }

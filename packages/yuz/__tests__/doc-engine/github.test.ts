@@ -60,7 +60,7 @@ describe('src/doc-engine/github', function () {
   });
 
 
-  // it('readRepoList', function (done) {
+  // it('readRepoRemote', function (done) {
   //   this.timeout(60000 * 3);
   //   const localPath = path.join(__dirname, '..', '__assets__', 'dist', 'github', 'example-gitbook');
   //   readRepoRemote({
