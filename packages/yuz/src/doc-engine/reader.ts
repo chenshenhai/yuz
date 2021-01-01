@@ -3,7 +3,7 @@ import compose from 'koa-compose';
 import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
-import { TypeReader, TypeReadType, TypeReadList } from '../types';
+import { TypeReader, TypeReadDocType, TypeReadList } from '../types';
 import { Storage } from '../storage';
 
 export class Reader extends EventEmitter implements TypeReader  {
@@ -12,7 +12,7 @@ export class Reader extends EventEmitter implements TypeReader  {
     super();
   }
 
-  readList(baseDir: string, opts: { type: TypeReadType }) {
+  readList(baseDir: string, opts: { type: TypeReadDocType }) {
     let list:TypeReadList = [];
     if (opts.type === 'gitbook') {
       list = loadGitbookList(baseDir);

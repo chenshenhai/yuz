@@ -5,7 +5,7 @@ export type TypeReadItem = {
   filePath: string;
 }
 
-export type TypeReadType = 'gitbook' | 'vuepress';
+export type TypeReadDocType = 'gitbook' | 'vuepress';
 
 export type TypeReadList = TypeReadItem[];
 
@@ -14,5 +14,5 @@ export type TypeReaderOptions = {
 }
 
 export interface TypeReader extends EventEmitter {
-  readList(baseDir: string, opts: { type: TypeReadType }): TypeReadList;
+  readList(baseDir: string, opts: { type: TypeReadDocType }): TypeReadList;
 }

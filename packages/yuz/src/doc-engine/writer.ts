@@ -3,7 +3,7 @@ import compose from 'koa-compose';
 import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
-import { TypeWriter, TypeReadType, TypeWriteStatus, TypeWriteList, TypeWriteResult } from '../types';
+import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult } from '../types';
 import { Storage } from '../storage';
 
 export class Writer extends EventEmitter implements TypeWriter  {
