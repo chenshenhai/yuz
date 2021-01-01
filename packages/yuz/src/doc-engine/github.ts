@@ -1,6 +1,6 @@
 import simpleGit, { SimpleGit } from 'simple-git';
 import compose from 'koa-compose';
-import { TypeGithubDocInfo } from './../types/github'
+import { TypeGithubDocInfo, TypeGithubFileInfo } from './../types/github'
 
 export async function cloneRepo(params: {
   user: string,
@@ -58,26 +58,32 @@ export async function readRepoFileTime(
 }
 
 
-// ["Already up-to-date.",""]
-
-
-// // add and edit
-// ["Updating d8c851e..1f8c319","Fast-forward"," SUMMARY.md  | 1 +"," docs/003.md | 7 +++++++"," docs/101.md | 2 +-"," docs/102.md | 6 ++++--"," 4 files changed, 13 insertions(+), 3 deletions(-)"," create mode 100644 docs/003.md",""]
-
-// // rename and edit
-//  ["Updating 1f8c319..dfe3f4d","Fast-forward"," SUMMARY.md              | 4 ++--"," docs/{003.md => 103.md} | 2 +-"," 2 files changed, 3 insertions(+), 3 deletions(-)"," rename docs/{003.md => 103.md} (54%)",""]
-
-// // delete
-// ["Updating dfe3f4d..384094e","Fast-forward"," SUMMARY.md  | 3 +--"," docs/103.md | 7 -------"," 2 files changed, 1 insertion(+), 9 deletions(-)"," delete mode 100644 docs/103.md",""]
-// // delete 2
-// ["Updating 384094e..bc73b5d","Fast-forward"," docs/002.md | 5 -----"," docs/102.md | 7 -------"," 2 files changed, 12 deletions(-)"," delete mode 100644 docs/002.md"," delete mode 100644 docs/102.md",""]
-
 export async function pullRepo (
   params: { localPath: string }
-): Promise<string[]> {
+): Promise<string> {
   const { localPath } = params;
   const git: SimpleGit = simpleGit({baseDir: localPath});
-  let res: string = await git.raw('pull');
-  let list = res.replace(/\r\n/, '\n').split('\n');
-  return list;
+  const res = await git.raw('pull');
+  return res;
 }
+
+export async function readRepoFilesInfo(params: { localPath: string, }): Promise<TypeGithubFileInfo[]> {
+  const { localPath } = params;
+  const list: string[] = await readRepoList(params);
+  const tasks: ((ctx: TypeGithubFileInfo[], next: Function) => void)[] = [];
+  const result: TypeGithubFileInfo[] = [];
+  list.forEach((filePath) => {
+    tasks.push(async(ctx: TypeGithubFileInfo[], next: Function) => {
+      const times = await readRepoFileTime({localPath, filePath});
+      ctx.push({
+        path: filePath,
+        createTime: parseInt(times.createTime),
+        lastModify: parseInt(times.modifiedTime)
+      })
+      await next();
+    })
+  })
+  await compose(tasks)(result);
+  return result;
+}
+

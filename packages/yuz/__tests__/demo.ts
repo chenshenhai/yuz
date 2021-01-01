@@ -2,29 +2,29 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { cloneRepo, pullRepo, readRepoList, readRepoFileTime, readRepoFilesInfo, } from '../../src/doc-engine/github';
-import { makeFullDir, removeFullDir, } from '../../src/util/file';
+import { cloneRepo, pullRepo, readRepoList, readRepoFileTime, readRepoFilesInfo, } from './../src/doc-engine/github';
+import { makeFullDir, removeFullDir, } from './../src/util/file';
 
-const testDir = path.join(__dirname, '..');
+const testDir = path.join(__dirname);
 
 describe('src/doc-engine/github', function () {
 
-  it('cloneRepo', function (done) {
-    this.timeout(60000 * 3);
-    const localPath = path.join(testDir, '__assets__', 'dist', 'github', 'example-gitbook');
-    if (fs.existsSync(localPath)) {
-      removeFullDir(localPath);
-    }
-    makeFullDir(localPath);
-    cloneRepo({
-      user: 'yuzjs',
-      repository: 'example-gitbook',
-      localPath: localPath,
-    }).then((res: any) => {
-      should(fs.existsSync(path.join(localPath, 'README.md'))).be.deepEqual(true);
-      done();
-    }).catch(done)
-  });
+  // it('cloneRepo', function (done) {
+  //   this.timeout(60000 * 3);
+  //   const localPath = path.join(testDir, '__assets__', 'dist', 'github', 'example-gitbook');
+  //   if (fs.existsSync(localPath)) {
+  //     removeFullDir(localPath);
+  //   }
+  //   makeFullDir(localPath);
+  //   cloneRepo({
+  //     user: 'yuzjs',
+  //     repository: 'example-gitbook',
+  //     localPath: localPath,
+  //   }).then((res: any) => {
+  //     should(fs.existsSync(path.join(localPath, 'README.md'))).be.deepEqual(true);
+  //     done();
+  //   }).catch(done)
+  // });
 
   it('readRepoList', function (done) {
     this.timeout(60000 * 3);
