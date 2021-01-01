@@ -30,9 +30,9 @@ export class Writer extends EventEmitter implements TypeWriter  {
       logs: []
     };
     list.forEach((item) => {
-      const { name, filePath } = item;
+      const { name, absolutePath } = item;
       try {
-        const content = fs.readFileSync(filePath, { encoding: 'utf8' });
+        const content = fs.readFileSync(absolutePath, { encoding: 'utf8' });
         storage.createItem({
           name: name,
           content: content,
@@ -42,14 +42,14 @@ export class Writer extends EventEmitter implements TypeWriter  {
         });
         result.logs.push({
           status: 'SUCCESS',
-          path: filePath,
+          path: absolutePath,
         });
       } catch (err) {
         result.hasError = true;
         result.success = false;
         result.logs.push({
           status: 'ERROR',
-          path: filePath,
+          path: absolutePath,
           info: err,
         })
       }

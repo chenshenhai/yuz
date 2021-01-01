@@ -18,15 +18,18 @@ export function loadGitbookList(baseDir: string): TypeReadList {
     const paths = str.match(matchPath);
     let _name = '';
     let _path = '';
+    let absolutePath = '';
     if (names && names.length > 0 && typeof names[1] === 'string') {
       _name = names[1];
     }
     if (paths && paths.length > 0 && typeof paths[1] === 'string') {
-      _path = path.join(baseDir, paths[1]);
+      _path = paths[1];
+      absolutePath = path.join(baseDir, paths[1]);
     }
     list.push({
       name: _name,
-      filePath: _path,
+      path: _path,
+      absolutePath,
     })
   });
   return list;

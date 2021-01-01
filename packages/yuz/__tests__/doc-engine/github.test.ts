@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { cloneRepo, pullRepo, readRepoList, readRepoFileTime, readRepoFilesInfo, } from '../../src/doc-engine/github';
+import { cloneRepo, pullRepo, readRepoList, readRepoFileTime, readRepoFilesInfo, readRepoListInfo, } from '../../src/doc-engine/github';
 import { makeFullDir, removeFullDir, } from '../../src/util/file';
 
 const testDir = path.join(__dirname, '..');
@@ -31,16 +31,9 @@ describe('src/doc-engine/github', function () {
     const localPath = path.join(testDir, '__assets__', 'dist', 'github', 'example-gitbook');
     readRepoList({
       localPath: localPath,
-    }).then((res: any) => {
-      should(res).be.deepEqual([
-        'README.md',
-        'SUMMARY.md',
-        'docs/001.md',
-        // 'docs/002.md',
-        'docs/101.md',
-        // 'docs/102.md',
-        'images/yuz-logo.png'
-      ]);
+    }).then((res: string[]) => {
+      should(Array.isArray(res)).be.deepEqual(true);
+      should(res.indexOf('README.md') >= 0).be.deepEqual(true);
       done();
     }).catch(done)
   });
@@ -84,5 +77,29 @@ describe('src/doc-engine/github', function () {
     }).catch(done)
   });
 
+  it('readRepoListInfo', function (done) {
+    this.timeout(60000 * 3);
+    const localPath = path.join(testDir, '__assets__', 'dist', 'github', 'example-gitbook');
+    
+
+    readRepoList({
+      localPath: localPath,
+    }).then((res: string[]) => {
+      should(Array.isArray(res)).be.deepEqual(true);
+      should(res.indexOf('README.md') >= 0).be.deepEqual(true);
+
+      readRepoListInfo({
+        localPath: localPath,
+        pathList: res,
+      }).then((res: any) => {
+        should(Array.isArray(res) && res.length > 0).be.deepEqual(true);
+        done();
+      }).catch(done)
+
+    }).catch(done)
+
+  });
+
+  
   
 });

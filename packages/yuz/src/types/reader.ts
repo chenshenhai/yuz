@@ -2,7 +2,10 @@ import { EventEmitter } from 'events';
 
 export type TypeReadItem = {
   name: string;
-  filePath: string;
+  path: string;
+  absolutePath: string;
+  createTime?: number;
+  lastModify?: number;
 }
 
 export type TypeReadDocType = 'gitbook' | 'vuepress';
@@ -14,5 +17,5 @@ export type TypeReaderOptions = {
 }
 
 export interface TypeReader extends EventEmitter {
-  readList(baseDir: string, opts: { type: TypeReadDocType }): TypeReadList;
+  readList(baseDir: string, opts: { type: TypeReadDocType }): Promise<TypeReadList>
 }

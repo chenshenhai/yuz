@@ -87,3 +87,22 @@ export async function readRepoFilesInfo(params: { localPath: string, }): Promise
   return result;
 }
 
+
+export async function readRepoListInfo(params: { localPath: string, pathList: string[]}): Promise<TypeGithubFileInfo[]> {
+  const { localPath, pathList } = params;
+  const tasks: ((ctx: TypeGithubFileInfo[], next: Function) => void)[] = [];
+  const result: TypeGithubFileInfo[] = [];
+  pathList.forEach((filePath) => {
+    tasks.push(async(ctx: TypeGithubFileInfo[], next: Function) => {
+      const times = await readRepoFileTime({localPath, filePath});
+      ctx.push({
+        path: filePath,
+        createTime: parseInt(times.createTime),
+        lastModify: parseInt(times.modifiedTime)
+      })
+      await next();
+    })
+  })
+  await compose(tasks)(result);
+  return result;
+}

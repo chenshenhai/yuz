@@ -6,7 +6,7 @@ import { Reader } from '../../src/doc-engine/reader';
 import { Writer } from '../../src/doc-engine/writer';
 
 describe('src/doc-engine/writer', function () {
-  it('Reader:gitbook', function (done) {
+  it('Writer.write:gitbook', function (done) {
     this.timeout(60000 * 1);
 
     const baseDir = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
@@ -14,9 +14,8 @@ describe('src/doc-engine/writer', function () {
 
     const reader = new Reader();
     const writer = new Writer();
-    const list = reader.readList(baseDir, { type: 'gitbook' });
-
-    writer.write(list, { storagePath: storageDir })
+    reader.readList(baseDir, { type: 'gitbook' }).then((list) => {
+      writer.write(list, { storagePath: storageDir })
       .then((result) => {
         should(result).be.deepEqual({
           "success": true,
@@ -43,5 +42,8 @@ describe('src/doc-engine/writer', function () {
         done();
         throw err;
       });
+    });
+
+   
   });
 });

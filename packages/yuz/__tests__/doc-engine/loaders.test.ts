@@ -12,19 +12,24 @@ describe('src/doc-engine/loaders', function () {
     const result = loadGitbookList(baseDir);
     should(result).be.deepEqual([{
       "name": "Readme",
-      "filePath": path.join(baseDir, "README.md")
+      "path": "README.md",
+      "absolutePath": path.join(baseDir, "README.md")
     }, {
       "name": "001",
-      "filePath": path.join(baseDir, "./docs/001.md")
+      "path": "./docs/001.md",
+      "absolutePath": path.join(baseDir, "./docs/001.md")
     }, {
       "name": "002",
-      "filePath": path.join(baseDir, "./docs/002.md"),
+      "path": "./docs/002.md",
+      "absolutePath": path.join(baseDir, "./docs/002.md"),
     }, {
       "name": "101",
-      "filePath": path.join(baseDir, "./docs/101.md"),
+      "path": "./docs/101.md",
+      "absolutePath": path.join(baseDir, "./docs/101.md"),
     }, {
       "name": "102",
-      "filePath": path.join(baseDir, "./docs/102.md")
+      "path": "./docs/102.md",
+      "absolutePath": path.join(baseDir, "./docs/102.md")
     }]);
   });
 });

@@ -7,28 +7,17 @@ import { Reader } from '../../src/doc-engine/reader';
 
 describe('src/doc-engine/reader', function () {
 
-  it('Reader:gitbook', function () {
+  it('Reader.read:gitbook', function (done) {
     const baseDir = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
     const reader = new Reader();
-    const list = reader.readList(baseDir, { type: 'gitbook' });
+    reader.readList(baseDir, { type: 'gitbook' }).then((list: any[]) => {
 
-    should(list).be.deepEqual([{
-      "name": "Readme",
-      "filePath": path.join(baseDir, "README.md")
-    }, {
-      "name": "001",
-      "filePath": path.join(baseDir, "./docs/001.md")
-    }, {
-      "name": "002",
-      "filePath": path.join(baseDir, "./docs/002.md"),
-    }, {
-      "name": "101",
-      "filePath": path.join(baseDir, "./docs/101.md"),
-    }, {
-      "name": "102",
-      "filePath": path.join(baseDir, "./docs/102.md")
-    }]);
-    
+      should(list[0].name).be.deepEqual('Readme');
+      should(list[0].path).be.deepEqual('README.md');
+      should(list[0].absolutePath).be.deepEqual( path.join(baseDir, "README.md"));
+
+      done();
+    }).catch(done);
   });
 
 });

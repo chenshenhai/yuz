@@ -46,14 +46,6 @@ export class DocEngine extends EventEmitter implements TypeDocEngine {
     this._tasks = [];
     const { remote, docType } = params;
 
-    // export type TypeDocEngineStep 
-    // = 'FREE'
-    //  | 'LOAD_REMOTE_DOC'
-    //  | 'UPDATE_REMOTE_DOC'
-    //  | 'READ_LOCAL_DOC'
-    //  | 'DIFF_LOCAL_DOC'
-    //  | 'WRITE_LOCAL_DOC';
-
     this._pushTaskLoadGithub(params);
     this._pushTaskReadLocal(params);
 
@@ -95,9 +87,9 @@ export class DocEngine extends EventEmitter implements TypeDocEngine {
     const { user, repository } = remote;
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
       const localPath = path.join(this._remoteDir, 'gitub', user, repository);
-      const res = this._reader.readList(localPath, { type: docType });
+      const res = await this._reader.readList(localPath, { type: docType });
       ctx.records.push({
-        step: 'READ_LOCAL_DOC',
+        step: 'READ_REMOTE_DOC',
         success: true,
         data: res
       })

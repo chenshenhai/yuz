@@ -1,10 +1,8 @@
 import { EventEmitter } from 'events';
 import { TypeStorageItem } from './storage';
+import { TypeReadItem } from './reader';
 
-export type TypeWriteItem = {
-  name: string;
-  filePath: string;
-}
+export type TypeWriteItem = TypeReadItem
 
 export type TypeWriteList = TypeWriteItem[];
 

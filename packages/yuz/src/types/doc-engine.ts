@@ -9,6 +9,7 @@ export type TypeDocEngineStep
 = 'FREE'
  | 'LOAD_REMOTE_DOC'
  | 'UPDATE_REMOTE_DOC'
+ | 'READ_REMOTE_DOC'
  | 'READ_LOCAL_DOC'
  | 'DIFF_LOCAL_DOC'
  | 'WRITE_LOCAL_DOC';
