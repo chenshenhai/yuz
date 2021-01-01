@@ -5,7 +5,7 @@ export type TypeReadItem = {
   path: string;
   absolutePath: string;
   createTime?: number;
-  lastModify?: number;
+  lastTime?: number;
 }
 
 export type TypeReadDocType = 'gitbook' | 'vuepress';

@@ -13,5 +13,5 @@ export type TypeGithubDocInfo = {
 export type TypeGithubFileInfo = {
   path: string,
   createTime: number,
-  lastModify: number,
+  lastTime: number,
 }

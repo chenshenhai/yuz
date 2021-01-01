@@ -33,7 +33,7 @@ export class Reader extends EventEmitter implements TypeReader  {
           path,
           absolutePath,
           createTime: infoMap[path]?.createTime,
-          lastModify: infoMap[path]?.lastModify,
+          lastTime: infoMap[path]?.lastTime,
         })
       })
 

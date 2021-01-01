@@ -78,7 +78,7 @@ export async function readRepoFilesInfo(params: { localPath: string, }): Promise
       ctx.push({
         path: filePath,
         createTime: parseInt(times.createTime),
-        lastModify: parseInt(times.modifiedTime)
+        lastTime: parseInt(times.modifiedTime)
       })
       await next();
     })
@@ -98,7 +98,7 @@ export async function readRepoListInfo(params: { localPath: string, pathList: st
       ctx.push({
         path: filePath,
         createTime: parseInt(times.createTime),
-        lastModify: parseInt(times.modifiedTime)
+        lastTime: parseInt(times.modifiedTime)
       })
       await next();
     })
