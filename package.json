@@ -1,5 +1,8 @@
 {
   "private": true,
+  "scripts": {
+    "test": "lerna bootstrap && lerna run --scope yuz test"
+  },
   "devDependencies": {
     "lerna": "^3.22.1",
     "typescript": "^4.1.3"
