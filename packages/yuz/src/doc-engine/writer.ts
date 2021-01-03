@@ -15,7 +15,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
     this._status = 'FREE';
   }
 
-  write(
+  writePosts(
     list: TypeWriteList,
     opts: { storagePath: string }
   ): Promise<TypeWriteResult> {

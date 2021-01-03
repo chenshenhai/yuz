@@ -47,10 +47,12 @@ export class DocEngine extends EventEmitter implements TypeDocEngine {
     const { remote, docType } = params;
 
     this._pushTaskLoadGithub(params);
-    this._pushTaskReadLocal(params);
+    this._pushTaskReadRemote(params);
+    this._pushTaskWriteLocalDoc(params);
 
     const result = {
-      records: [],
+      steps: [],
+      stepMap: {},
       remote,
       docType,
     }
@@ -73,29 +75,50 @@ export class DocEngine extends EventEmitter implements TypeDocEngine {
           localPath,
         });
       }
-      ctx.records.push({
-        step: 'LOAD_REMOTE_DOC',
+      const step = 'LOAD_REMOTE_DOC';
+      ctx.steps.push(step);
+      ctx.stepMap[step] = {
+        step,
         success: true,
         data: res
-      })
+      }
       await next();
     });
   }
 
-  private async _pushTaskReadLocal(params: TypeDocEngineProcessParams) {
+  private async _pushTaskReadRemote(params: TypeDocEngineProcessParams) {
     const { remote, docType } = params;
     const { user, repository } = remote;
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
       const localPath = path.join(this._remoteDir, 'gitub', user, repository);
       const res = await this._reader.readList(localPath, { type: docType });
-      ctx.records.push({
-        step: 'READ_REMOTE_DOC',
+      const step = 'READ_REMOTE_DOC';
+      ctx.steps.push(step);
+      ctx.stepMap[step] = {
+        step: step,
         success: true,
         data: res
-      })
+      }
       await next();
     });
   }
 
+  private async _pushTaskWriteLocalDoc(params: TypeDocEngineProcessParams) {
+    const { remote, docType } = params;
+    const { user, repository } = remote;
+    this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
+      const res = await this._writer.writePosts(ctx.stepMap['READ_REMOTE_DOC'].data, { storagePath: this._postsDir });
+      const step = 'WRITE_LOCAL_DOC';
+      ctx.steps.push(step);
+      ctx.stepMap[step] = {
+        step,
+        success: true,
+        data: res
+      }
+      await next();
+    });
+  }
+
+  
 
 }

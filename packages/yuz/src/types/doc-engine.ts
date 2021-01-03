@@ -22,7 +22,8 @@ export type TypeDocEngineRecord = {
 }
 
 export type TypeDocEngineResult = TypeDocEngineProcessParams & {
-  records: TypeDocEngineRecord[]
+  steps: TypeDocEngineStep[],
+  stepMap: {[key: string]: TypeDocEngineRecord}
 }
 
 export type TypeDocEngineRemoteType = 'github';

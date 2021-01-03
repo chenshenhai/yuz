@@ -15,7 +15,7 @@ describe('src/doc-engine/writer', function () {
     const reader = new Reader();
     const writer = new Writer();
     reader.readList(baseDir, { type: 'gitbook' }).then((list) => {
-      writer.write(list, { storagePath: storageDir })
+      writer.writePosts(list, { storagePath: storageDir })
       .then((result) => {
         should(result).be.deepEqual({
           "success": true,

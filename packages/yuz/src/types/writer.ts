@@ -24,7 +24,7 @@ export type TypeWriteResult = {
 }
 
 export interface TypeWriter extends EventEmitter {
-  write(
+  writePosts(
     list: TypeWriteList,
     opts: { storagePath: string }
   ): Promise<TypeWriteResult>;
