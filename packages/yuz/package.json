@@ -8,6 +8,7 @@
 		"ci": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/*.test.ts",
     "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
+    "test:all": "mocha -r ts-node/register --exit __tests__/**/*test.ts",
 		"test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/demo.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
