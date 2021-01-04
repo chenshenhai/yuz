@@ -6,7 +6,7 @@ import { DocEngine } from '../../src/doc-engine';
 
 
 describe('src/doc-engine/index', function () {
-  it('DocEngine.process', function (done) {
+  it('GithubDocEngine.process: GITHUB', function (done) {
 
     this.timeout(60000 * 3);
 
@@ -18,7 +18,7 @@ describe('src/doc-engine/index', function () {
         user: 'yuzjs',
         repository: 'example-gitbook',
         version: 'main',
-        remoteType: 'github',
+        type: 'GITHUB',
       },
       docType: 'gitbook'
     }).then((result) => {

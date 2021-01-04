@@ -6,7 +6,7 @@ import supertest from 'supertest';
 import chai from 'chai';
 
 import nextBuild from 'next/dist/build';
-import { ThemeServer } from './../../src/server';
+import { ThemeServer } from '../../src/server';
 import { removeFullDir } from '../../src/util/file';
 
 

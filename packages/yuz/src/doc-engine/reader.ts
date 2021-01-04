@@ -3,7 +3,7 @@ import compose from 'koa-compose';
 import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
-import { readRepoListInfo } from './github';
+import { readRepoListInfo } from '../util/github';
 import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, } from '../types';
 import { Storage } from '../storage';
 

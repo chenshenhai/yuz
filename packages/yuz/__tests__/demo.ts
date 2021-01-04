@@ -7,7 +7,7 @@ import { DocEngine } from './../src/doc-engine';
 const testDir = path.join(__dirname, '..');
 
 describe('src/doc-engine/index', function () {
-  it('DocEngine.process', function (done) {
+  it('DocEngine.process: GITHUB', function (done) {
 
     this.timeout(60000 * 3);
 
@@ -19,7 +19,7 @@ describe('src/doc-engine/index', function () {
         user: 'yuzjs',
         repository: 'example-gitbook',
         version: 'main',
-        remoteType: 'github',
+        type: 'GITHUB',
       },
       docType: 'gitbook'
     }).then((result) => {

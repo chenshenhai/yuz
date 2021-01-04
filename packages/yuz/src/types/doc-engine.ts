@@ -8,11 +8,10 @@ export type TypeDocEngineOptions = {
 export type TypeDocEngineStep 
 = 'FREE'
  | 'LOAD_REMOTE_DOC'
- | 'UPDATE_REMOTE_DOC'
- | 'READ_REMOTE_DOC'
- | 'READ_LOCAL_DOC'
- | 'DIFF_LOCAL_DOC'
- | 'WRITE_LOCAL_DOC';
+ | 'PULL_REMOTE_DOC'
+ | 'CREATE_DOC_SNAPSHOT'
+ | 'DIFF_DOC_SNAPSHOT'
+ | 'REFRESH_DOC_POSTS';
 
 
 export type TypeDocEngineRecord = {
@@ -26,19 +25,19 @@ export type TypeDocEngineResult = TypeDocEngineProcessParams & {
   stepMap: {[key: string]: TypeDocEngineRecord}
 }
 
-export type TypeDocEngineRemoteType = 'github';
+export type TypeDocEngineRemoteType = 'GITHUB';  // | 'GITHUB_ZIP' | 'UPLOAD';
 
 export type TypeDocEngineProcessParams = {
   remote: {
     user: string,
     repository: string,
     version: string;
-    sourceType?: 'git' | 'zip';
-    remoteType?: 'github' | 'upload';
+    type?: TypeDocEngineRemoteType;
   },
   docType: TypeReadDocType;
 }
 
 export interface TypeDocEngine extends EventEmitter {
+  getStatus(): TypeDocEngineStep;
   process(params: TypeDocEngineProcessParams): Promise<TypeDocEngineResult>;
 }

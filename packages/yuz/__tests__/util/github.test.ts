@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { cloneRepo, pullRepo, readRepoList, readRepoFileTime, readRepoFilesInfo, readRepoListInfo, } from '../../src/doc-engine/github';
+import { cloneRepo, pullRepo, readRepoList, readRepoFileTime, readRepoFilesInfo, readRepoListInfo, } from '../../src/util/github';
 import { makeFullDir, removeFullDir, } from '../../src/util/file';
 
 const testDir = path.join(__dirname, '..');
