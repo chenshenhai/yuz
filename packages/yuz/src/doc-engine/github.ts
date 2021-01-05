@@ -116,14 +116,14 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     const { user, repository } = remote;
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
       const localPath = path.join(this._remoteDir, 'gitub', user, repository);
-      const listInfo = await this._reader.readList(localPath, { type: docType });
-      const res = await this._writer.writePosts(listInfo, { storagePath: this._postsDir });
+      const snapshot = await this._reader.createSnapshot(localPath, { type: docType, name: `gitub/${user}/${repository}` });
+      // const res = await this._writer.writePosts(listInfo, { storagePath: this._postsDir });
       const step = 'CREATE_DOC_SNAPSHOT';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
         step,
         success: true,
-        data: res
+        data: snapshot
       }
       await next();
     });

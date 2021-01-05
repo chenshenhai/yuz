@@ -6,3 +6,4 @@ export * from './reader';
 export * from './writer';
 export * from './github';
 export * from './doc-engine';
+export * from './snapshot';
