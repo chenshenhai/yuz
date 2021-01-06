@@ -46,14 +46,24 @@ export async function readRepoList(params: { localPath: string, }): Promise<stri
 
 export async function readRepoFileTime(
   params: { localPath: string, filePath: string }
-): Promise<{createTime: string, modifiedTime: string}> {
+): Promise<{createTime: string, lastTime: string}> {
   const { localPath, filePath } = params;
   const git: SimpleGit = simpleGit({baseDir: localPath});
   let timeRes: string = await git.raw('log', '--pretty=format:%at', '--', filePath);
   const times = timeRes.replace(/\r\n/, '\n').split('\n');
+
+  let createTime = times[times.length - 1];
+  let lastTime = times[0];
+  if (createTime.length <= 10) {
+    createTime = `${createTime}000`;
+  }
+  if (lastTime.length <= 10) {
+    lastTime = `${lastTime}000`;
+  }
+
   return {
-    createTime: times[times.length - 1],
-    modifiedTime: times[0],
+    createTime,
+    lastTime,
   };
 }
 
@@ -78,7 +88,7 @@ export async function readRepoFilesInfo(params: { localPath: string, }): Promise
       ctx.push({
         path: filePath,
         createTime: parseInt(times.createTime),
-        lastTime: parseInt(times.modifiedTime)
+        lastTime: parseInt(times.lastTime)
       })
       await next();
     })
@@ -98,7 +108,7 @@ export async function readRepoListInfo(params: { localPath: string, pathList: st
       ctx.push({
         path: filePath,
         createTime: parseInt(times.createTime),
-        lastTime: parseInt(times.modifiedTime)
+        lastTime: parseInt(times.lastTime)
       })
       await next();
     })
