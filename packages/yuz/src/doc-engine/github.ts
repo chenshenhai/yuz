@@ -3,8 +3,9 @@ import path from 'path';
 import { EventEmitter } from 'events';
 import compose from 'koa-compose';
 import { TypeDocEngine, TypeDocEngineResult, TypeDocEngineOptions, TypeDocEngineStep, TypeDocEngineProcessParams } from '../types';
-import { makeFullDir, removeFullDir } from '../util/file';
+import { makeFullDir, removeFullDir, writeJson } from '../util/file';
 import { cloneRepo, pullRepo } from '../util/github';
+import { getNowDateList } from './../util/date';
 import { Reader } from './reader';
 import { Writer } from './writer';
 
@@ -117,6 +118,11 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
       const localPath = path.join(this._remoteDir, 'gitub', user, repository);
       const snapshot = await this._reader.createSnapshot(localPath, { type: docType, name: `gitub/${user}/${repository}` });
+      const dateList = getNowDateList();
+      const snapshotDir = path.join(this._snapshotDir, ...dateList);
+      const snapshotPath = path.join(snapshotDir, `${Date.now()}.json`);
+      makeFullDir(snapshotDir)
+      writeJson(snapshotPath, snapshot);
       // const res = await this._writer.writePosts(listInfo, { storagePath: this._postsDir });
       const step = 'CREATE_DOC_SNAPSHOT';
       ctx.steps.push(step);

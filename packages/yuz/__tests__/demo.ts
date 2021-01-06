@@ -4,7 +4,7 @@ import should from 'should';
 import 'mocha';
 import { DocEngine } from './../src/doc-engine';
 
-const testDir = path.join(__dirname, '..');
+const testDir = path.join(__dirname);
 
 describe('src/doc-engine/index', function () {
   it('DocEngine.process: GITHUB', function (done) {
