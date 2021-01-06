@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { TypeDocSnapShot } from './snapshot';
+import { TypeDocSnapshot } from './snapshot';
 
 export type TypeReadItem = {
   name: string;
@@ -19,5 +19,5 @@ export type TypeReaderOptions = {
 
 export interface TypeReader extends EventEmitter {
   readDocList(baseDir: string, opts: { type: TypeReadDocType }): Promise<TypeReadList>
-  createSnapshot(baseDir: string, opts: { type: TypeReadDocType }): Promise<TypeDocSnapShot> 
+  createSnapshot(baseDir: string, opts: { type: TypeReadDocType }): Promise<TypeDocSnapshot> 
 }

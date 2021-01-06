@@ -5,7 +5,7 @@ import fs from 'fs';
 import md5 from 'md5';
 import { loadGitbookList } from './loaders';
 import { readRepoListInfo } from '../util/github';
-import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapShot} from '../types';
+import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapshot} from '../types';
 import { Storage } from '../storage';
 
 export class Reader extends EventEmitter implements TypeReader  {
@@ -14,11 +14,11 @@ export class Reader extends EventEmitter implements TypeReader  {
     super();
   }
   
-  async createSnapshot(baseDir: string, opts: { type: TypeReadDocType, name: string }): Promise<TypeDocSnapShot> {
+  async createSnapshot(baseDir: string, opts: { type: TypeReadDocType, name: string }): Promise<TypeDocSnapshot> {
     const { name } = opts;
     const docList: TypeReadList = await this.readDocList(baseDir, opts);
     const now = Date.now();
-    const snapshot: TypeDocSnapShot = { 
+    const snapshot: TypeDocSnapshot = { 
       time: now,
       docMap: {},
     };
@@ -27,6 +27,7 @@ export class Reader extends EventEmitter implements TypeReader  {
       const id = md5(path.join(name, item.path));
       snapshot.docMap[id] = {
         id,
+        name: item.name,
         path: docPath,
         createTime: item.createTime || 0,
         lastTime: item.lastTime || 0,

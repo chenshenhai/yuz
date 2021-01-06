@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import { TypeStorageItem } from './storage';
 import { TypeReadItem } from './reader';
+import { TypeDocSnapshot } from './snapshot';
 
 export type TypeWriteItem = TypeReadItem
 
@@ -25,7 +26,7 @@ export type TypeWriteResult = {
 
 export interface TypeWriter extends EventEmitter {
   writePosts(
-    list: TypeWriteList,
-    opts: { storagePath: string }
-  ): Promise<TypeWriteResult>;
+    snapshot: TypeDocSnapshot,
+    opts: { postsDir: string, remoteDir: string }
+  ): Promise<TypeWriteResult>
 }

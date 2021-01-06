@@ -50,9 +50,16 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     this._tasks = [];
     const { remote, docType } = params;
 
+    // | 'LOAD_REMOTE_DOC'
+    // | 'PULL_REMOTE_DOC'
+    // | 'CREATE_DOC_SNAPSHOT'
+    // | 'DIFF_DOC_SNAPSHOT'
+    // | 'REFRESH_DOC_POSTS';
+
     this._pushTaskLoadRemoteDoc(params);
     this._pushTaskPullRemoteDoc(params);
     this._pushTaskCreateDocSnapshot(params);
+    this._pushTaskRefreshDoc(params);
 
     const result = {
       steps: [],
@@ -130,6 +137,23 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
         step,
         success: true,
         data: snapshot
+      }
+      await next();
+    });
+  }
+
+  private async _pushTaskRefreshDoc(params: TypeDocEngineProcessParams) {
+    // const { remote, docType } = params;
+    // const { user, repository } = remote;
+    this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
+      const snapshot = ctx.stepMap['CREATE_DOC_SNAPSHOT'].data;
+      const res = await this._writer.writePosts(snapshot, { postsDir: this._postsDir, remoteDir: this._remoteDir });
+      const step = 'CREATE_DOC_SNAPSHOT';
+      ctx.steps.push(step);
+      ctx.stepMap[step] = {
+        step,
+        success: true,
+        data: res
       }
       await next();
     });

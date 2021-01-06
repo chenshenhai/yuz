@@ -5,6 +5,7 @@ import fs from 'fs';
 import { loadGitbookList } from './loaders';
 import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult } from '../types';
 import { Storage } from '../storage';
+import { TypeDocSnapshot } from './../types/snapshot';
 
 export class Writer extends EventEmitter implements TypeWriter  {
 
@@ -16,25 +17,27 @@ export class Writer extends EventEmitter implements TypeWriter  {
   }
 
   writePosts(
-    list: TypeWriteList,
-    opts: { storagePath: string }
+    snapshot: TypeDocSnapshot,
+    opts: { postsDir: string, remoteDir: string }
   ): Promise<TypeWriteResult> {
     if (this._status === 'WRITING') {
       return Promise.reject(Error('READER_IS_WRITING'));
     }
     this._status = 'WRITING';
-    const storage = new Storage({ baseDir: opts.storagePath });
+    const storage = new Storage({ baseDir: opts.postsDir });
     storage.init({force: true});
     const result: TypeWriteResult = {
       success: true,
       logs: []
     };
-    list.forEach((item) => {
-      const { name, absolutePath } = item;
+    const docIds = Object.keys(snapshot.docMap);
+    docIds.forEach((id) => {
+      const doc = snapshot.docMap[id];
+      const absolutePath = path.join(opts.remoteDir, doc.path)
       try {
         const content = fs.readFileSync(absolutePath, { encoding: 'utf8' });
         storage.createItem({
-          name: name,
+          name: doc.name,
           content: content,
           createTime: Date.now(),
           lastTime: Date.now(),
