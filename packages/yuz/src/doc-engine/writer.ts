@@ -37,6 +37,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
       try {
         const content = fs.readFileSync(absolutePath, { encoding: 'utf8' });
         storage.createItem({
+          uuid: doc.id,
           name: doc.name,
           content: content,
           createTime: Date.now(),

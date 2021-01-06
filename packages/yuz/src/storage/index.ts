@@ -1,5 +1,5 @@
 import path from 'path';
-// import md5 from 'md5';
+import md5 from 'md5';
 // import fs from 'fs';
 import { makeFullDir, writeJson, readJson, removeFullDir } from './../util/file';
 import { TypeStorageOptions, TypeStorageInitOptions, TypeStorageQueryListParams, TypeStorageQueryListResult, TypeStorage, TypeStorageItem } from './../types';
@@ -28,8 +28,12 @@ export class Storage implements TypeStorage {
   }
 
   createItem(item: TypeStorageItem): string {
-    // const uuid = md5(Math.random().toString(36));
-    const uuid = Math.random().toString(16).substr(2, 10);
+    let uuid = '';
+    if (typeof item.uuid === 'string') {
+      uuid = item.uuid;
+    } else {
+      uuid = md5(Math.random().toString(36));
+    }
     const itemBaseDir = path.join(this._itemsPath, uuid[0]);
     makeFullDir(itemBaseDir);
     const itemPath = path.join(itemBaseDir, `${uuid}.json`);
