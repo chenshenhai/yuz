@@ -52,14 +52,17 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
 
     // | 'LOAD_REMOTE_DOC'
     // | 'PULL_REMOTE_DOC'
+    // | 'READ_LAST_DOC_SNAPSHOT'
     // | 'CREATE_DOC_SNAPSHOT'
     // | 'DIFF_DOC_SNAPSHOT'
     // | 'REFRESH_DOC_POSTS';
 
     this._pushTaskLoadRemoteDoc(params);
     this._pushTaskPullRemoteDoc(params);
+    this._pushTaskReadLastDocSnapshot(params);
     this._pushTaskCreateDocSnapshot(params);
-    this._pushTaskRefreshDoc(params);
+    
+    // this._pushTaskRefreshDoc(params);
 
     const result = {
       steps: [],
@@ -132,6 +135,34 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
       writeJson(snapshotPath, snapshot);
       // const res = await this._writer.writePosts(listInfo, { storagePath: this._postsDir });
       const step = 'CREATE_DOC_SNAPSHOT';
+      ctx.steps.push(step);
+      ctx.stepMap[step] = {
+        step,
+        success: true,
+        data: snapshot
+      }
+      await next();
+    });
+  }
+
+  private async _pushTaskReadLastDocSnapshot(params: TypeDocEngineProcessParams) {
+    this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
+      const snapshot = this._reader.readLastSnapshot(this._snapshotDir);
+      const step = 'READ_LAST_DOC_SNAPSHOT';
+      ctx.steps.push(step);
+      ctx.stepMap[step] = {
+        step,
+        success: true,
+        data: snapshot
+      }
+      await next();
+    });
+  }
+
+  private async _pushTaskDiffDocSnapshot(params: TypeDocEngineProcessParams) {
+    this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
+      const snapshot = this._reader.readLastSnapshot(this._snapshotDir);
+      const step = 'DIFF_DOC_SNAPSHOT';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
         step,

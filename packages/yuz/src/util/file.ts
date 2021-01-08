@@ -51,3 +51,38 @@ export function readJson(filePath: string): {[key: string]: any} | any[] | null 
 	}
 	return result;
 }
+
+
+export function getMaxNumDirName(baseDir: string): string|null {
+  let numName: string|null = null;
+  if (fs.existsSync(baseDir) && fs.statSync(baseDir).isDirectory()) {
+    const dirs = fs.readdirSync(baseDir);
+    dirs.sort();
+    let name: string | undefined = undefined;
+    while(dirs.length > 0) {
+      name = dirs.pop();
+      if (name && /^[0-9]{1,}$/ig.test(name)) {
+				numName = name
+        break;
+      }
+    }
+  }
+  return numName;
+}
+
+export function getMaxNumFileName(baseDir: string): string|null {
+  let numName: string|null = null;
+  if (fs.existsSync(baseDir) && fs.statSync(baseDir).isDirectory()) {
+		const files = fs.readdirSync(baseDir);
+    files.sort();
+    let name: string | undefined = undefined;
+    while(files.length > 0) {
+      name = files.pop();
+      if (name && /^[0-9]{1,}\.[0-9a-z]{1,}$/ig.test(name)) {
+				numName = name;
+        break;
+      }
+    }
+	}
+  return numName;
+}

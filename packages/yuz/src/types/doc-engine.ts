@@ -9,9 +9,11 @@ export type TypeDocEngineStep
 = 'FREE'
  | 'LOAD_REMOTE_DOC'
  | 'PULL_REMOTE_DOC'
+ | 'READ_LAST_DOC_SNAPSHOT'
  | 'CREATE_DOC_SNAPSHOT'
  | 'DIFF_DOC_SNAPSHOT'
  | 'REFRESH_DOC_POSTS';
+
 
 
 export type TypeDocEngineRecord = {
