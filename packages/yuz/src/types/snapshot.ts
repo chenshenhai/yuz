@@ -22,7 +22,7 @@ export type TypeDocSnapshot = {
 
 
 export type TypeDiffDocSnapshot = {
-  doc: {
+  docMap: {
     [id: string]: {
       status: 'CREATED' | 'EDITED' | 'DELETED'
     }

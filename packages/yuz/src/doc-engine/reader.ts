@@ -8,6 +8,7 @@ import { readRepoListInfo } from '../util/github';
 import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapshot, TypeDiffDocSnapshot} from '../types';
 import { Storage } from '../storage';
 import { getMaxNumDirName, getMaxNumFileName, readJson } from './../util/file';
+import { parseImageRelativeUrl } from './../util/markdown';
 
 export class Reader extends EventEmitter implements TypeReader  {
 
@@ -18,6 +19,10 @@ export class Reader extends EventEmitter implements TypeReader  {
   async createSnapshot(baseDir: string, opts: { type: TypeReadDocType, name: string }): Promise<TypeDocSnapshot> {
     const { name } = opts;
     const docList: TypeReadList = await this.readDocList(baseDir, opts);
+
+    // // TODO
+    // await this.readImageList(baseDir, docList);
+
     const now = Date.now();
     const snapshot: TypeDocSnapshot = { 
       time: now,
@@ -39,6 +44,9 @@ export class Reader extends EventEmitter implements TypeReader  {
         }
       }
     });
+
+
+
     return snapshot; 
   }
 
@@ -98,9 +106,23 @@ export class Reader extends EventEmitter implements TypeReader  {
     return result;
   }
 
+  async readImageList(baseDir: string, docList: TypeReadList): Promise<TypeReadList> {
+    const imageList: TypeReadList = [];
+    docList.forEach((item) => {
+      const md = fs.readFileSync(item.absolutePath, { encoding: 'utf8' });
+      const docDepsImgList = parseImageRelativeUrl(md);
+      const mdDir = path.dirname(item.absolutePath);
+      const imageUrls = docDepsImgList.map((item) => {
+        path.join(mdDir, item);
+      });
+      console.log('imageUrls =====', imageUrls);
+    })
+    return [];
+  }
+
   async diffSnapshot(before: TypeDocSnapshot|null, after: TypeDocSnapshot): Promise<TypeDiffDocSnapshot> {
     const diff: TypeDiffDocSnapshot = {
-      doc:{}
+      docMap:{}
     };
     const beforeIds = Object.keys(before?.docMap || {});
     const afterIds = Object.keys(after.docMap);
@@ -110,13 +132,13 @@ export class Reader extends EventEmitter implements TypeReader  {
         if (after.docMap[id]) {
           if(after.docMap[id].lastTime > before?.docMap[id].lastTime) {
             if (after.docMap[id].status === 'EXISTED') {
-              diff.doc[id] = { status: 'EDITED' };
+              diff.docMap[id] = { status: 'EDITED' };
             } else {
-              diff.doc[id] = { status: 'DELETED' };
+              diff.docMap[id] = { status: 'DELETED' };
             }
           }
         } else {
-          diff.doc[id] = { status: 'DELETED' };
+          diff.docMap[id] = { status: 'DELETED' };
         }
       }
     });
@@ -124,10 +146,10 @@ export class Reader extends EventEmitter implements TypeReader  {
     afterIds.forEach((id: string) => {
       if (before && before.docMap[id]) {
         if (before.docMap[id].status === 'NOT_EXISTED') {
-          diff.doc[id] = { status: 'CREATED' };
+          diff.docMap[id] = { status: 'CREATED' };
         }
       } else {
-        diff.doc[id] = { status: 'CREATED' };
+        diff.docMap[id] = { status: 'CREATED' };
       }
     });
 

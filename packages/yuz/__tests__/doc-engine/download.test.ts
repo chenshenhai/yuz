@@ -7,7 +7,7 @@ import { downloadGithubZip } from '../../src/doc-engine/download';
 
 describe('src/doc-engine/download', function () {
   it('downloadGithubZip', function (done) {
-    this.timeout(60000 * 2);
+    this.timeout(60000 * 4);
     downloadGithubZip({
       name: 'yuzjs',
       repo: 'example-gitbook',

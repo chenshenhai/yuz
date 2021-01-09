@@ -48,7 +48,7 @@ describe('src/doc-engine/github', function () {
       filePath: 'README.md'
     }).then((res: any) => {
       should(parseInt(res.createTime) > 0).be.deepEqual(true);
-      should(parseInt(res.modifiedTime) > 0).be.deepEqual(true);
+      should(parseInt(res.lastTime) > 0).be.deepEqual(true);
       done();
     }).catch(done)
   });

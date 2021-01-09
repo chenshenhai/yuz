@@ -62,8 +62,7 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     this._pushTaskReadLastDocSnapshot(params);
     this._pushTaskCreateDocSnapshot(params);
     this._pushTaskDiffDocSnapshot(params);
-    
-    // this._pushTaskRefreshDoc(params);
+    this._pushTaskRefreshDoc(params);
 
     const result = {
       steps: [],

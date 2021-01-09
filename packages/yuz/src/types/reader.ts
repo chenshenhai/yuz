@@ -19,6 +19,7 @@ export type TypeReaderOptions = {
 
 export interface TypeReader extends EventEmitter {
   readDocList(baseDir: string, opts: { type: TypeReadDocType }): Promise<TypeReadList>
+  readImageList(baseDir: string, docList: TypeReadList): Promise<TypeReadList> 
   createSnapshot(baseDir: string, opts: { type: TypeReadDocType }): Promise<TypeDocSnapshot> 
   readLastSnapshot(snapshotDir: string): Promise<TypeDocSnapshot|null>
   diffSnapshot(before: TypeDocSnapshot, after: TypeDocSnapshot): Promise<TypeDiffDocSnapshot>

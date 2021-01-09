@@ -10,7 +10,7 @@ describe('src/doc-engine/reader', function () {
   it('Reader.read:gitbook', function (done) {
     const baseDir = path.join(__dirname, '..', '__assets__', 'md', 'gitbook');
     const reader = new Reader();
-    reader.readList(baseDir, { type: 'gitbook' }).then((list: any[]) => {
+    reader.readDocList(baseDir, { type: 'gitbook' }).then((list: any[]) => {
 
       should(list[0].name).be.deepEqual('Readme');
       should(list[0].path).be.deepEqual('README.md');
