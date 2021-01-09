@@ -44,9 +44,6 @@ export class Reader extends EventEmitter implements TypeReader  {
         }
       }
     });
-
-
-
     return snapshot; 
   }
 
@@ -107,17 +104,40 @@ export class Reader extends EventEmitter implements TypeReader  {
   }
 
   async readImageList(baseDir: string, docList: TypeReadList): Promise<TypeReadList> {
-    const imageList: TypeReadList = [];
+    const result: TypeReadList = [];
+    const tasks: ((ctx: any, next: any) => {})[] = [];
+    const infoMap: {[key: string]: TypeGithubFileInfo} = {};
+      
     docList.forEach((item) => {
       const md = fs.readFileSync(item.absolutePath, { encoding: 'utf8' });
       const docDepsImgList = parseImageRelativeUrl(md);
-      const mdDir = path.dirname(item.absolutePath);
-      const imageUrls = docDepsImgList.map((item) => {
-        path.join(mdDir, item);
+      const mdDir = path.dirname(item.path);
+      const imageList: string[] = docDepsImgList.map((item) => {
+        return path.join(mdDir, item);
       });
-      console.log('imageUrls =====', imageUrls);
-    })
-    return [];
+      tasks.push(async (ctx: any, next: any) => {
+        const gitInfoList = await readRepoListInfo({ localPath:baseDir, pathList: imageList });
+        gitInfoList.forEach((info: TypeGithubFileInfo) => {
+          infoMap[info.path] = info;
+        });
+        await next();
+      });
+    });
+    await compose(tasks)({});
+
+    const pathList = Object.keys(infoMap);
+    pathList.forEach((p) => {
+      const item = infoMap[p];
+      result.push({
+        name: '',
+        path: p,
+        absolutePath: path.join(baseDir, p),
+        createTime: item?.createTime,
+        lastTime: item?.lastTime,
+      })
+    });
+
+    return result;
   }
 
   async diffSnapshot(before: TypeDocSnapshot|null, after: TypeDocSnapshot): Promise<TypeDiffDocSnapshot> {
@@ -152,7 +172,6 @@ export class Reader extends EventEmitter implements TypeReader  {
         diff.docMap[id] = { status: 'CREATED' };
       }
     });
-
     return diff;
   }
 }
