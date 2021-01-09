@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { EventEmitter } from 'events';
 import compose from 'koa-compose';
-import { TypeDocEngine, TypeDocEngineResult, TypeDocEngineOptions, TypeDocEngineStep, TypeDocEngineProcessParams } from '../types';
+import { TypeDocEngine, TypeDocEngineResult, TypeDocEngineOptions, TypeDocEngineStep, TypeDocEngineProcessParams, TypeDocSnapshot } from '../types';
 import { makeFullDir, removeFullDir, writeJson } from '../util/file';
 import { cloneRepo, pullRepo } from '../util/github';
 import { getNowDateList } from './../util/date';
@@ -61,6 +61,7 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     this._pushTaskPullRemoteDoc(params);
     this._pushTaskReadLastDocSnapshot(params);
     this._pushTaskCreateDocSnapshot(params);
+    this._pushTaskDiffDocSnapshot(params);
     
     // this._pushTaskRefreshDoc(params);
 
@@ -147,7 +148,7 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
 
   private async _pushTaskReadLastDocSnapshot(params: TypeDocEngineProcessParams) {
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
-      const snapshot = this._reader.readLastSnapshot(this._snapshotDir);
+      const snapshot = await this._reader.readLastSnapshot(this._snapshotDir);
       const step = 'READ_LAST_DOC_SNAPSHOT';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
@@ -161,13 +162,15 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
 
   private async _pushTaskDiffDocSnapshot(params: TypeDocEngineProcessParams) {
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
-      const snapshot = this._reader.readLastSnapshot(this._snapshotDir);
       const step = 'DIFF_DOC_SNAPSHOT';
+      const before: TypeDocSnapshot|null = ctx.stepMap['READ_LAST_DOC_SNAPSHOT'].data as TypeDocSnapshot|null;
+      const after: TypeDocSnapshot = ctx.stepMap['CREATE_DOC_SNAPSHOT'].data as TypeDocSnapshot;
+      const diff = await this._reader.diffSnapshot(before, after);
       ctx.steps.push(step);
       ctx.stepMap[step] = {
         step,
         success: true,
-        data: snapshot
+        data: diff
       }
       await next();
     });

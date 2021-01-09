@@ -5,7 +5,7 @@ import fs from 'fs';
 import md5 from 'md5';
 import { loadGitbookList } from './loaders';
 import { readRepoListInfo } from '../util/github';
-import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapshot} from '../types';
+import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapshot, TypeDiffDocSnapshot} from '../types';
 import { Storage } from '../storage';
 import { getMaxNumDirName, getMaxNumFileName, readJson } from './../util/file';
 
@@ -26,18 +26,23 @@ export class Reader extends EventEmitter implements TypeReader  {
     docList.forEach((item) => {
       const docPath = path.join(name, item.path);
       const id = md5(path.join(name, item.path));
-      snapshot.docMap[id] = {
-        id,
-        name: item.name,
-        path: docPath,
-        createTime: item.createTime || 0,
-        lastTime: item.lastTime || 0,
+      let status: 'NOT_EXISTED' | 'EXISTED' = 'NOT_EXISTED';
+      if (fs.existsSync(item.absolutePath) && fs.statSync(item.absolutePath).isFile()) {
+        status = 'EXISTED';
+        snapshot.docMap[id] = {
+          id,
+          name: item.name,
+          path: docPath,
+          createTime: item.createTime || 0,
+          lastTime: item.lastTime || 0,
+          status,
+        }
       }
     });
     return snapshot; 
   }
 
-  readLastSnapshot(snapshotDir: string): TypeDocSnapshot|null {
+  async readLastSnapshot(snapshotDir: string): Promise<TypeDocSnapshot|null> {
     let snapshot = null;
     const nameList: string[] = [];
     
@@ -93,5 +98,40 @@ export class Reader extends EventEmitter implements TypeReader  {
     return result;
   }
 
+  async diffSnapshot(before: TypeDocSnapshot|null, after: TypeDocSnapshot): Promise<TypeDiffDocSnapshot> {
+    const diff: TypeDiffDocSnapshot = {
+      doc:{}
+    };
+    const beforeIds = Object.keys(before?.docMap || {});
+    const afterIds = Object.keys(after.docMap);
+    
+    beforeIds.forEach((id: string) => {
+      if (before && before.docMap) {
+        if (after.docMap[id]) {
+          if(after.docMap[id].lastTime > before?.docMap[id].lastTime) {
+            if (after.docMap[id].status === 'EXISTED') {
+              diff.doc[id] = { status: 'EDITED' };
+            } else {
+              diff.doc[id] = { status: 'DELETED' };
+            }
+          }
+        } else {
+          diff.doc[id] = { status: 'DELETED' };
+        }
+      }
+    });
+
+    afterIds.forEach((id: string) => {
+      if (before && before.docMap[id]) {
+        if (before.docMap[id].status === 'NOT_EXISTED') {
+          diff.doc[id] = { status: 'CREATED' };
+        }
+      } else {
+        diff.doc[id] = { status: 'CREATED' };
+      }
+    });
+
+    return diff;
+  }
 }
 
