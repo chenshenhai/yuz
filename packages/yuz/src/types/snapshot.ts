@@ -11,13 +11,16 @@ export type TypeDocSnapshot = {
       status: 'EXISTED' | 'NOT_EXISTED'
     }
   }
-  // // TODO
-  // images: {
-  //   id: string; // path md5 uuid
-  //   path: string;
-  //   createTime: number;
-  //   lastTime: number;
-  // }[];
+  imageMap: {
+    [id: string]: {
+      id: string; // path md5 uuid
+      name?: string;
+      path: string;
+      createTime: number;
+      lastTime: number;
+      status: 'EXISTED' | 'NOT_EXISTED';
+    }
+  };
 }
 
 
@@ -26,12 +29,10 @@ export type TypeDiffDocSnapshot = {
     [id: string]: {
       status: 'CREATED' | 'EDITED' | 'DELETED'
     }
+  },
+  imageMap: {
+    [id: string]: {
+      status: 'CREATED' | 'EDITED' | 'DELETED'
+    }
   }
-  // // TODO
-  // images: {
-  //   id: string; // path md5 uuid
-  //   path: string;
-  //   createTime: number;
-  //   lastTime: number;
-  // }[];
 }

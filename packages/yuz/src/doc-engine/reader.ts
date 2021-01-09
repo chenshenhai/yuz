@@ -19,14 +19,12 @@ export class Reader extends EventEmitter implements TypeReader  {
   async createSnapshot(baseDir: string, opts: { type: TypeReadDocType, name: string }): Promise<TypeDocSnapshot> {
     const { name } = opts;
     const docList: TypeReadList = await this.readDocList(baseDir, opts);
-
-    // // TODO
-    // await this.readImageList(baseDir, docList);
-
+    const imageList = await this.readImageList(baseDir, docList);
     const now = Date.now();
     const snapshot: TypeDocSnapshot = { 
       time: now,
       docMap: {},
+      imageMap: {},
     };
     docList.forEach((item) => {
       const docPath = path.join(name, item.path);
@@ -44,6 +42,24 @@ export class Reader extends EventEmitter implements TypeReader  {
         }
       }
     });
+
+    imageList.forEach((item) => {
+      const imgPath = path.join(name, item.path);
+      const id = md5(path.join(name, item.path));
+      let status: 'NOT_EXISTED' | 'EXISTED' = 'NOT_EXISTED';
+      if (fs.existsSync(item.absolutePath) && fs.statSync(item.absolutePath).isFile()) {
+        status = 'EXISTED';
+        snapshot.imageMap[id] = {
+          id,
+          name: item.name,
+          path: imgPath,
+          createTime: item.createTime || 0,
+          lastTime: item.lastTime || 0,
+          status,
+        }
+      }
+    });
+
     return snapshot; 
   }
 
@@ -142,37 +158,48 @@ export class Reader extends EventEmitter implements TypeReader  {
 
   async diffSnapshot(before: TypeDocSnapshot|null, after: TypeDocSnapshot): Promise<TypeDiffDocSnapshot> {
     const diff: TypeDiffDocSnapshot = {
-      docMap:{}
+      docMap: {},
+      imageMap: {},
     };
-    const beforeIds = Object.keys(before?.docMap || {});
-    const afterIds = Object.keys(after.docMap);
+    diff.docMap = await this._diffSnapshotMap(before?.docMap, after.docMap);
+    diff.imageMap = await this._diffSnapshotMap(before?.imageMap, after.imageMap);
+  
+    return diff;
+  }
+
+  async _diffSnapshotMap(
+    before: TypeDocSnapshot['docMap'] | TypeDocSnapshot['imageMap'] | undefined,
+    after: TypeDocSnapshot['docMap'] | TypeDocSnapshot['imageMap']
+  ): Promise<TypeDiffDocSnapshot['docMap'] | TypeDiffDocSnapshot['imageMap']> {
     
+    const beforeIds = Object.keys(before || {});
+    const afterIds = Object.keys(after);
+    const diffMap: TypeDiffDocSnapshot['docMap'] | TypeDiffDocSnapshot['imageMap'] = {}
+
     beforeIds.forEach((id: string) => {
-      if (before && before.docMap) {
-        if (after.docMap[id]) {
-          if(after.docMap[id].lastTime > before?.docMap[id].lastTime) {
-            if (after.docMap[id].status === 'EXISTED') {
-              diff.docMap[id] = { status: 'EDITED' };
-            } else {
-              diff.docMap[id] = { status: 'DELETED' };
-            }
+      if (after[id] && before) {
+        if(after[id].lastTime > before[id].lastTime) {
+          if (after[id].status === 'EXISTED') {
+            diffMap[id] = { status: 'EDITED' };
+          } else {
+            diffMap[id] = { status: 'DELETED' };
           }
-        } else {
-          diff.docMap[id] = { status: 'DELETED' };
         }
+      } else {
+        diffMap[id] = { status: 'DELETED' };
       }
     });
 
     afterIds.forEach((id: string) => {
-      if (before && before.docMap[id]) {
-        if (before.docMap[id].status === 'NOT_EXISTED') {
-          diff.docMap[id] = { status: 'CREATED' };
+      if (before && before[id]) {
+        if (before[id].status === 'NOT_EXISTED') {
+          diffMap[id] = { status: 'CREATED' };
         }
       } else {
-        diff.docMap[id] = { status: 'CREATED' };
+        diffMap[id] = { status: 'CREATED' };
       }
     });
-    return diff;
+    return diffMap;
   }
 }
 
