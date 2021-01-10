@@ -19,26 +19,26 @@ const item = {
 }
 
 describe('src/storage', function () {
-  it('Storage.init', function () {
+  it('DocStorage.init', function () {
     storage.init({force: true})
     should(fs.existsSync(baseDir)).be.equal(true);
   });
 
-  it('Storage.createItem', function () {
+  it('DocStorage.createItem', function () {
     storage.init({force: true});
     const uuid = storage.createItem(item);
     should(uuid).be.String;
     should(fs.existsSync(path.join(baseDir, 'items', uuid[0], `${uuid}.json`))).be.equal(true);
   });
 
-  it('Storage.queryItem', function () {
+  it('DocStorage.queryItem', function () {
     storage.init({force: true});
     const uuid = storage.createItem(item);
     const result = storage.queryItem(uuid);
     should(result).be.deepEqual({...item, ...{uuid}});
   });
 
-  it('Storage.queryList', function () {
+  it('DocStorage.queryList', function () {
     storage.init({force: true});
     const uuid1 = storage.createItem(item);
     const uuid2 = storage.createItem(item);
@@ -55,7 +55,7 @@ describe('src/storage', function () {
     });
   });
 
-  it('Storage.deleteItem', function () {
+  it('DocStorage.deleteItem', function () {
     storage.init({force: true});
     const uuid = storage.createItem(item);
     const beforeCount = storage.count();
@@ -66,7 +66,7 @@ describe('src/storage', function () {
     should(beforeCount).be.deepEqual(afterCount + 1);
   });
 
-  it('Storage.count', function () {
+  it('DocStorage.count', function () {
     storage.init({force: true});
     should(storage.count()).be.deepEqual(0);
 

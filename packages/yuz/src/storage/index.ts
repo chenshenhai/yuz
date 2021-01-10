@@ -1,1 +1,1 @@
-export * from './doc-storage';
+export * from './doc';
