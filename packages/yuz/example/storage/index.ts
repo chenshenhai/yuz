@@ -1,10 +1,10 @@
 import path from 'path';
-import { Storage } from './../../src/storage';
+import { DocStorage } from './../../src/storage';
 
 const baseDir = path.join(__dirname, 'dist');
 
 
-const storage = new Storage({
+const storage = new DocStorage({
   baseDir,
 });
 

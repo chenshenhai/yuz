@@ -6,7 +6,6 @@ import md5 from 'md5';
 import { loadGitbookList } from './loaders';
 import { readRepoListInfo } from '../util/github';
 import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapshot, TypeDiffDocSnapshot} from '../types';
-import { Storage } from '../storage';
 import { getMaxNumDirName, getMaxNumFileName, readJson } from './../util/file';
 import { parseImageRelativeUrl } from './../util/markdown';
 
