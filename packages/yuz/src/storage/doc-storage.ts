@@ -51,6 +51,7 @@ export class DocStorage implements TypeStorage {
   deleteItem(uuid: string) {
     const itemPath = path.join(this._itemsPath, uuid[0], `${uuid}.json`);
     fs.rmSync(itemPath);
+    this._deleteIndex(uuid);
   }
 
   queryList(params: TypeStorageQueryListParams): TypeStorageQueryListResult {
@@ -73,10 +74,30 @@ export class DocStorage implements TypeStorage {
     };
   }
 
+  count(): number {
+    let num = 0;
+    const list = readJson(this._indexFilePath);
+    if (Array.isArray(list)) {
+      num = list.length
+    }
+    return num;
+  }
+
   private _pushIndex(uuid: string) {
     const list = readJson(this._indexFilePath);
     if (Array.isArray(list)) {
       list.push(uuid);
+      writeJson(this._indexFilePath, list);
+    }
+  }
+
+  private _deleteIndex(uuid: string) {
+    const list = readJson(this._indexFilePath);
+    if (Array.isArray(list)) {
+      const index = list?.indexOf(uuid);
+      if (index >= 0) {
+        list?.splice(index,1)
+      }
       writeJson(this._indexFilePath, list);
     }
   }

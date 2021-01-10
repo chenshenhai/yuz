@@ -5,7 +5,7 @@ import 'mocha';
 import { DocStorage } from '../../src/storage';
 
 const testDir = path.join(__dirname, '..');
-const baseDir = path.join(testDir, '__assets__', 'dist', 'storage');
+const baseDir = path.join(testDir, '__assets__', 'dist', 'storage', 'doc');
 
 const storage = new DocStorage({
   baseDir,
@@ -58,9 +58,23 @@ describe('src/storage', function () {
   it('Storage.deleteItem', function () {
     storage.init({force: true});
     const uuid = storage.createItem(item);
+    const beforeCount = storage.count();
     storage.deleteItem(uuid);
+    const afterCount = storage.count();
     const result = storage.queryItem(uuid);
     should(result).be.deepEqual(null);
+    should(beforeCount).be.deepEqual(afterCount + 1);
+  });
+
+  it('Storage.count', function () {
+    storage.init({force: true});
+    should(storage.count()).be.deepEqual(0);
+
+    storage.createItem(item);
+    should(storage.count()).be.deepEqual(1);
+
+    storage.createItem(item);
+    should(storage.count()).be.deepEqual(2);
   });
 
 });

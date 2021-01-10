@@ -24,6 +24,7 @@ export interface TypeStorage {
   queryItem(uuid: string): TypeStorageItem|null;
   queryList(params: TypeStorageQueryListParams): TypeStorageQueryListResult;
   deleteItem(uuid: string): void;
+  count(): number;
 }
 
 export type TypeStorageItem = {
