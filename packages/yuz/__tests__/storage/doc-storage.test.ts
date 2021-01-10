@@ -2,12 +2,12 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { Storage } from './../../src/storage';
+import { DocStorage } from '../../src/storage';
 
 const testDir = path.join(__dirname, '..');
 const baseDir = path.join(testDir, '__assets__', 'dist', 'storage');
 
-const storage = new Storage({
+const storage = new DocStorage({
   baseDir,
 });
 const item = {

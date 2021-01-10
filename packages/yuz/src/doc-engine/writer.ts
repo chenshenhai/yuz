@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
 import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult, TypeDocSnapshot, TypeDiffDocSnapshot } from '../types';
-import { Storage } from '../storage';
+import { DocStorage } from '../storage';
 import { removeFullDir } from './../util/file';
 
 export class Writer extends EventEmitter implements TypeWriter  {
@@ -26,7 +26,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
       return Promise.reject(Error('READER_IS_WRITING'));
     }
     this._status = 'WRITING';
-    const storage = new Storage({ baseDir: opts.postsDir });
+    const storage = new DocStorage({ baseDir: opts.postsDir });
     storage.init({force: true});
     const result: TypeWriteResult = {
       success: true,
@@ -74,7 +74,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
       return Promise.reject(Error('READER_IS_WRITING'));
     }
     this._status = 'WRITING';
-    const storage = new Storage({ baseDir: opts.postsDir });
+    const storage = new DocStorage({ baseDir: opts.postsDir });
     storage.init({force: true});
     const result: TypeWriteResult = {
       success: true,
