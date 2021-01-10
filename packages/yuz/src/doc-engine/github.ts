@@ -181,7 +181,7 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
       const snapshot = ctx.stepMap['CREATE_DOC_SNAPSHOT'].data;
       const res = await this._writer.writePosts(snapshot, { postsDir: this._postsDir, remoteDir: this._remoteDir });
-      const step = 'CREATE_DOC_SNAPSHOT';
+      const step = 'REFRESH_DOC_POSTS';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
         step,

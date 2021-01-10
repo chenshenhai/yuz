@@ -3,9 +3,9 @@ import compose from 'koa-compose';
 import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
-import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult } from '../types';
+import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult, TypeDocSnapshot, TypeDiffDocSnapshot } from '../types';
 import { Storage } from '../storage';
-import { TypeDocSnapshot } from './../types/snapshot';
+import { removeFullDir } from './../util/file';
 
 export class Writer extends EventEmitter implements TypeWriter  {
 
@@ -18,7 +18,9 @@ export class Writer extends EventEmitter implements TypeWriter  {
 
   writePosts(
     snapshot: TypeDocSnapshot,
-    opts: { postsDir: string, remoteDir: string }
+    opts: {
+      postsDir: string, remoteDir: string,
+    }
   ): Promise<TypeWriteResult> {
     if (this._status === 'WRITING') {
       return Promise.reject(Error('READER_IS_WRITING'));
@@ -58,6 +60,94 @@ export class Writer extends EventEmitter implements TypeWriter  {
         })
       }
     });
+    this._status = 'FREE';
+    return Promise.resolve(result);
+  }
+
+
+  async writeAssets(
+    snapshot: TypeDocSnapshot,
+    diffSnapshot: TypeDiffDocSnapshot, 
+    opts: { postsDir: string, remoteDir: string, imagesDir: string, }
+  ): Promise<TypeWriteResult> {
+    if (this._status === 'WRITING') {
+      return Promise.reject(Error('READER_IS_WRITING'));
+    }
+    this._status = 'WRITING';
+    const storage = new Storage({ baseDir: opts.postsDir });
+    storage.init({force: true});
+    const result: TypeWriteResult = {
+      success: true,
+      logs: []
+    };
+
+    // write docs
+    const docIds = Object.keys(diffSnapshot.docMap);
+    docIds.forEach((id) => {
+      const doc = snapshot.docMap[id];
+      const absoluteRemotePath = path.join(opts.remoteDir, doc.path)
+      try {
+
+        if (['CREATED', 'EDITED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {
+          const content = fs.readFileSync(absoluteRemotePath, { encoding: 'utf8' });
+          storage.createItem({
+            uuid: doc.id,
+            name: doc.name,
+            content: content,
+            createTime: Date.now(),
+            lastTime: Date.now(),
+            creator: '',
+          });
+        } else if (['DELETED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {
+          const absoluteLocalPostPath = path.join(opts.postsDir, 'items', `${id}.json`)
+          fs.unlinkSync(absoluteLocalPostPath);
+        }
+        result.logs.push({
+          status: 'SUCCESS',
+          path: absoluteRemotePath,
+        });
+      } catch (err) {
+        result.hasError = true;
+        result.success = false;
+        result.logs.push({
+          status: 'ERROR',
+          path: absoluteRemotePath,
+          info: err,
+        })
+      }
+    });
+
+    // move images
+    // write docs
+    const imageIds = Object.keys(diffSnapshot.imageMap);
+    imageIds.forEach((id) => {
+      const image = snapshot.imageMap[id];
+      const extname = path.extname(image.path);
+      const absolutePath = path.join(opts.imagesDir, `${image.id}${extname}`)
+      const absoluteRemotePath = path.join(opts.remoteDir, image.path);
+      try {
+        console.log('diffSnapshot?.imageMap[id] = ', diffSnapshot?.imageMap[id]);
+        if (['CREATED', 'EDITED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {
+          fs.copyFileSync(absoluteRemotePath, absolutePath)
+        } else if (['DELETED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {
+          fs.unlinkSync(absolutePath);
+        }
+        result.logs.push({
+          status: 'SUCCESS',
+          path: absoluteRemotePath,
+          info: absolutePath
+        });
+      } catch (err) {
+        result.hasError = true;
+        result.success = false;
+        result.logs.push({
+          status: 'ERROR',
+          path: absoluteRemotePath,
+          info: err,
+        })
+      }
+    });
+
     this._status = 'FREE';
     return Promise.resolve(result);
   }
