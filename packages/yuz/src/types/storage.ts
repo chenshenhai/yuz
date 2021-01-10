@@ -20,7 +20,7 @@ export type TypeStorageQueryListResult = {
 
 export interface TypeStorage {
   init(opts?: TypeStorageInitOptions): void;
-  createItem(item: {[key: string]: any}): string;
+  createItem(item: TypeStorageItem): string|null;
   queryItem(uuid: string): TypeStorageItem|null;
   queryList(params: TypeStorageQueryListParams): TypeStorageQueryListResult;
   deleteItem(uuid: string): void;

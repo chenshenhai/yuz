@@ -7,13 +7,13 @@ import { TypeStorageOptions, TypeStorageInitOptions, TypeStorageQueryListParams,
 export class DocStorage implements TypeStorage {
 
   private _opts: TypeStorageOptions;
-  private _itemsPath: string;
+  private _itemsDir: string;
   private _indexFilePath: string;
 
   constructor(opts: TypeStorageOptions) {
     this._opts = opts;
     const { baseDir } = opts;
-    this._itemsPath = path.join(baseDir, 'items');
+    this._itemsDir = path.join(baseDir, 'items');
     this._indexFilePath = path.join(baseDir, 'index.json');
   }
 
@@ -23,7 +23,7 @@ export class DocStorage implements TypeStorage {
       removeFullDir(baseDir);
     }
     makeFullDir(baseDir);
-    makeFullDir(this._itemsPath);
+    makeFullDir(this._itemsDir);
     writeJson(this._indexFilePath, []);
   }
 
@@ -34,7 +34,8 @@ export class DocStorage implements TypeStorage {
     } else {
       uuid = md5(Math.random().toString(36));
     }
-    const itemBaseDir = path.join(this._itemsPath, uuid[0]);
+    item.uuid = uuid;
+    const itemBaseDir = path.join(this._itemsDir, uuid[0]);
     makeFullDir(itemBaseDir);
     const itemPath = path.join(itemBaseDir, `${uuid}.json`);
     writeJson(itemPath, {...item, ...{ uuid }});
@@ -43,13 +44,13 @@ export class DocStorage implements TypeStorage {
   }
 
   queryItem(uuid: string): TypeStorageItem|null {
-    const itemPath = path.join(this._itemsPath, uuid[0], `${uuid}.json`);
+    const itemPath = path.join(this._itemsDir, uuid[0], `${uuid}.json`);
     const item = readJson(itemPath) as TypeStorageItem|null;
     return item;
   }
 
   deleteItem(uuid: string) {
-    const itemPath = path.join(this._itemsPath, uuid[0], `${uuid}.json`);
+    const itemPath = path.join(this._itemsDir, uuid[0], `${uuid}.json`);
     fs.rmSync(itemPath);
     this._deleteIndex(uuid);
   }
@@ -83,7 +84,15 @@ export class DocStorage implements TypeStorage {
     return num;
   }
 
-  private _pushIndex(uuid: string) {
+  protected _getItemsDir(): string {
+    return this._itemsDir;
+  }
+
+  protected _getIndexFilePath(): string {
+    return this._indexFilePath;
+  }
+
+  protected _pushIndex(uuid: string) {
     const list = readJson(this._indexFilePath);
     if (Array.isArray(list)) {
       list.push(uuid);
@@ -91,7 +100,7 @@ export class DocStorage implements TypeStorage {
     }
   }
 
-  private _deleteIndex(uuid: string) {
+  protected _deleteIndex(uuid: string) {
     const list = readJson(this._indexFilePath);
     if (Array.isArray(list)) {
       const index = list?.indexOf(uuid);

@@ -16,9 +16,13 @@ export function removeFullDir(dirPath: string) {
 		files = fs.readdirSync(dirPath);
 		files.forEach((filename) => {
       let curPath = path.join(dirPath, filename);
-			if(fs.statSync(curPath).isDirectory()) {
+      const stat = fs.statSync(curPath);
+			if(stat.isDirectory()) {
 				removeFullDir(curPath);
-			} else {
+			} else if (stat.isFile()) {
+        // fs.unlinkSync(curPath);
+        fs.rmSync(curPath);
+      } else {
 				fs.unlinkSync(curPath);
 			}
 		});

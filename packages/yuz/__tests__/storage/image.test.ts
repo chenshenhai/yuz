@@ -2,44 +2,56 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { DocStorage } from '../../src/storage';
+import { ImageStorage } from '../../src/storage';
 
 const testDir = path.join(__dirname, '..');
-const baseDir = path.join(testDir, '__assets__', 'dist', 'storage', 'doc');
+const baseDir = path.join(testDir, '__assets__', 'dist', 'storage', 'image');
+const imgDir = path.join(testDir, '__assets__', 'img');
 
-const storage = new DocStorage({
+const storage = new ImageStorage({
   baseDir,
 });
 const item = {
-  name: 'hello world 001',
-  content: '[001]xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  name: 'Image 001',
+  content: path.join(imgDir, 'yuz-logo.png'),
   createTime: Date.now(),
   lastTime: Date.now(),
   creator: 'Yuz',
 }
 
 describe('src/storage', function () {
-  it('DocStorage.init', function () {
+  it('ImageStorage.init', function () {
     storage.init({force: true})
     should(fs.existsSync(baseDir)).be.equal(true);
   });
 
-  it('DocStorage.createItem', function () {
+  it('ImageStorage.createItem', function () {
     storage.init({force: true});
     const uuid = storage.createItem(item);
+
+    let extname = path.extname(item?.content);
+    extname = extname.toLocaleLowerCase();
+
     should(uuid).be.String;
     should(fs.existsSync(path.join(baseDir, 'items', uuid[0], `${uuid}.json`))).be.equal(true);
+    should(fs.existsSync(path.join(baseDir, 'items', uuid[0], `${uuid}${extname}`))).be.equal(true);
   });
 
-  it('DocStorage.queryItem', function () {
+  it('ImageStorage.queryItem', function () {
     storage.init({force: true});
     const uuid = storage.createItem(item);
     const result = storage.queryItem(uuid);
-    should(result).be.deepEqual({...item, ...{uuid}});
+
+    let extname = path.extname(item?.content);
+    extname = extname.toLocaleLowerCase();
+    should(result).be.deepEqual({...item, ...{ uuid, content: `${uuid}${extname}` }});
   });
 
-  it('DocStorage.queryList', function () {
+  it('ImageStorage.queryList', function () {
     storage.init({force: true});
+    let extname = path.extname(item?.content);
+    extname = extname.toLocaleLowerCase();
+
     const uuid1 = storage.createItem(item);
     const uuid2 = storage.createItem(item);
     const uuid3 = storage.createItem(item);
@@ -49,13 +61,13 @@ describe('src/storage', function () {
     should(result).be.deepEqual({
       total: 5,
       items: [
-        {...item, ...{uuid: uuid2}},
-        {...item, ...{uuid: uuid1}}
+        {...item, ...{uuid: uuid2, content: `${uuid2}${extname}`}},
+        {...item, ...{uuid: uuid1, content: `${uuid1}${extname}`}}
       ]
     });
   });
 
-  it('DocStorage.deleteItem', function () {
+  it('ImageStorage.deleteItem', function () {
     storage.init({force: true});
     const uuid = storage.createItem(item);
     const beforeCount = storage.count();
@@ -66,7 +78,7 @@ describe('src/storage', function () {
     should(beforeCount).be.deepEqual(afterCount + 1);
   });
 
-  it('DocStorage.count', function () {
+  it('ImageStorage.count', function () {
     storage.init({force: true});
     should(storage.count()).be.deepEqual(0);
 
@@ -78,3 +90,5 @@ describe('src/storage', function () {
   });
 
 });
+
+
