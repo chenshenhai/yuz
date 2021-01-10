@@ -4,7 +4,8 @@ import should from 'should';
 import 'mocha';
 import { Storage } from './../../src/storage';
 
-const baseDir = path.join(__dirname, 'dist');
+const testDir = path.join(__dirname, '..');
+const baseDir = path.join(testDir, '__assets__', 'dist', 'storage');
 
 const storage = new Storage({
   baseDir,
@@ -52,6 +53,14 @@ describe('src/storage', function () {
         {...item, ...{uuid: uuid1}}
       ]
     });
+  });
+
+  it('Storage.deleteItem', function () {
+    storage.init({force: true});
+    const uuid = storage.createItem(item);
+    storage.deleteItem(uuid);
+    const result = storage.queryItem(uuid);
+    should(result).be.deepEqual(null);
   });
 
 });

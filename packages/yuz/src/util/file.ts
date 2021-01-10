@@ -42,8 +42,11 @@ export function writeJson(filePath: string, json: {[key: string]: any}): void {
 }
 
 export function readJson(filePath: string): {[key: string]: any} | any[] | null {
+  let result : {[key: string]: any} | null = null;
+  if (!(fs.existsSync(filePath) && fs.statSync(filePath).isFile())) {
+    return result;
+  }
 	const content = fs.readFileSync(filePath, { encoding: 'utf8' });
-	let result : {[key: string]: any} | null = null;
 	try {
 		result = JSON.parse(content);
 	} catch (err) {

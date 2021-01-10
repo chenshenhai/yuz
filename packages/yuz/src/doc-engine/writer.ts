@@ -99,8 +99,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
             creator: '',
           });
         } else if (['DELETED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {
-          const absoluteLocalPostPath = path.join(opts.postsDir, 'items', `${id}.json`)
-          fs.unlinkSync(absoluteLocalPostPath);
+          storage.deleteItem(id);
         }
         result.logs.push({
           status: 'SUCCESS',
@@ -126,7 +125,6 @@ export class Writer extends EventEmitter implements TypeWriter  {
       const absolutePath = path.join(opts.imagesDir, `${image.id}${extname}`)
       const absoluteRemotePath = path.join(opts.remoteDir, image.path);
       try {
-        console.log('diffSnapshot?.imageMap[id] = ', diffSnapshot?.imageMap[id]);
         if (['CREATED', 'EDITED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {
           fs.copyFileSync(absoluteRemotePath, absolutePath)
         } else if (['DELETED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {

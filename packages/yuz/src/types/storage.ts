@@ -23,6 +23,7 @@ export interface TypeStorage {
   createItem(item: {[key: string]: any}): string;
   queryItem(uuid: string): TypeStorageItem|null;
   queryList(params: TypeStorageQueryListParams): TypeStorageQueryListResult;
+  deleteItem(uuid: string): void;
 }
 
 export type TypeStorageItem = {
