@@ -32,9 +32,12 @@ export class DocStorage implements TypeStorage {
     if (typeof item.uuid === 'string') {
       uuid = item.uuid;
     } else {
-      uuid = md5(Math.random().toString(36));
+      uuid = md5(Math.random().toString(36).substr(2,));
     }
-    item.uuid = uuid;
+
+    if (this.queryItem(uuid)) {
+      throw new Error(`Item[${uuid}] is existed.`)
+    }
     const itemBaseDir = path.join(this._itemsDir, uuid[0]);
     makeFullDir(itemBaseDir);
     const itemPath = path.join(itemBaseDir, `${uuid}.json`);
@@ -43,11 +46,23 @@ export class DocStorage implements TypeStorage {
     return uuid;
   }
 
+  updateItem(item: TypeStorageItem): boolean {
+    if (!(typeof item.uuid === 'string' && item.uuid)) {
+      return false;
+    }
+    const uuid = item.uuid;
+    const itemBaseDir = path.join(this._itemsDir, uuid[0]);
+    const itemPath = path.join(itemBaseDir, `${uuid}.json`);
+    writeJson(itemPath, item);
+    return true;
+  }
+
   queryItem(uuid: string): TypeStorageItem|null {
     const itemPath = path.join(this._itemsDir, uuid[0], `${uuid}.json`);
     const item = readJson(itemPath) as TypeStorageItem|null;
     return item;
   }
+
 
   deleteItem(uuid: string) {
     const itemPath = path.join(this._itemsDir, uuid[0], `${uuid}.json`);

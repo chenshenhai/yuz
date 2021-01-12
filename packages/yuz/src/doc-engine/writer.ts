@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
 import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult, TypeDocSnapshot, TypeDiffDocSnapshot } from '../types';
-import { DocStorage } from '../storage';
+import { DocStorage, ImageStorage } from '../storage';
 import { removeFullDir } from './../util/file';
 
 export class Writer extends EventEmitter implements TypeWriter  {
@@ -19,15 +19,15 @@ export class Writer extends EventEmitter implements TypeWriter  {
   writePosts(
     snapshot: TypeDocSnapshot,
     opts: {
-      postsDir: string, remoteDir: string,
+      postsDir: string, remoteDir: string, imagesDir: string
     }
   ): Promise<TypeWriteResult> {
     if (this._status === 'WRITING') {
       return Promise.reject(Error('READER_IS_WRITING'));
     }
     this._status = 'WRITING';
-    const storage = new DocStorage({ baseDir: opts.postsDir });
-    storage.init({force: true});
+    const docStorage = new DocStorage({ baseDir: opts.postsDir });
+    docStorage.init({force: true});
     const result: TypeWriteResult = {
       success: true,
       logs: []
@@ -38,7 +38,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
       const absolutePath = path.join(opts.remoteDir, doc.path)
       try {
         const content = fs.readFileSync(absolutePath, { encoding: 'utf8' });
-        storage.createItem({
+        docStorage.createItem({
           uuid: doc.id,
           name: doc.name,
           content: content,
@@ -74,8 +74,10 @@ export class Writer extends EventEmitter implements TypeWriter  {
       return Promise.reject(Error('READER_IS_WRITING'));
     }
     this._status = 'WRITING';
-    const storage = new DocStorage({ baseDir: opts.postsDir });
-    storage.init({force: true});
+    const docStorage = new DocStorage({ baseDir: opts.postsDir });
+    const imgStorage = new ImageStorage({ baseDir: opts.imagesDir })
+    docStorage.init({force: true});
+    imgStorage.init({force: true});
     const result: TypeWriteResult = {
       success: true,
       logs: []
@@ -90,7 +92,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
 
         if (['CREATED', 'EDITED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {
           const content = fs.readFileSync(absoluteRemotePath, { encoding: 'utf8' });
-          storage.createItem({
+          docStorage.createItem({
             uuid: doc.id,
             name: doc.name,
             content: content,
@@ -99,7 +101,7 @@ export class Writer extends EventEmitter implements TypeWriter  {
             creator: '',
           });
         } else if (['DELETED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {
-          storage.deleteItem(id);
+          docStorage.deleteItem(id);
         }
         result.logs.push({
           status: 'SUCCESS',
@@ -126,9 +128,13 @@ export class Writer extends EventEmitter implements TypeWriter  {
       const absoluteRemotePath = path.join(opts.remoteDir, image.path);
       try {
         if (['CREATED', 'EDITED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {
-          fs.copyFileSync(absoluteRemotePath, absolutePath)
+          // TODO
+          // fs.copyFileSync(absoluteRemotePath, absolutePath)
+          // docStorage.createItem({
+          // });
         } else if (['DELETED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {
-          fs.unlinkSync(absolutePath);
+          // TODO
+          // fs.unlinkSync(absolutePath);
         }
         result.logs.push({
           status: 'SUCCESS',

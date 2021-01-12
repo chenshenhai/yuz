@@ -3,6 +3,7 @@ import fs from 'fs';
 import should from 'should';
 import 'mocha';
 import { DocStorage } from '../../src/storage';
+import { TypeStorageItem } from './../../src/types';
 
 const testDir = path.join(__dirname, '..');
 const baseDir = path.join(testDir, '__assets__', 'dist', 'storage', 'doc');
@@ -10,7 +11,7 @@ const baseDir = path.join(testDir, '__assets__', 'dist', 'storage', 'doc');
 const storage = new DocStorage({
   baseDir,
 });
-const item = {
+const item: TypeStorageItem = {
   name: 'hello world 001',
   content: '[001]xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
   createTime: Date.now(),
@@ -30,6 +31,32 @@ describe('src/storage', function () {
     should(uuid).be.String;
     should(fs.existsSync(path.join(baseDir, 'items', uuid[0], `${uuid}.json`))).be.equal(true);
   });
+
+  it('DocStorage.updateItem', function () {
+    storage.init({force: true});
+    const uuid = storage.createItem(item);
+
+    const newItem = {
+      uuid,
+      name: 'hello world 002',
+      content: '[002]xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      // createTime: Date.now(),
+      // lastTime: Date.now(),
+      creator: 'Yuz',
+    }
+    const status = storage.updateItem(newItem);
+
+    should(status).be.equal(true);
+
+    const result = storage.queryItem(uuid);
+
+    // @ts-ignore
+    delete result?.createTime;
+    // @ts-ignore
+    delete result?.lastTime;
+    should(result).be.deepEqual(newItem);
+  });
+
 
   it('DocStorage.queryItem', function () {
     storage.init({force: true});
