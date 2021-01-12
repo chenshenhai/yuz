@@ -106,7 +106,7 @@ describe('src/doc-engine/writer', function () {
       imagesDir: imagesDir,
       remoteDir: remoteDir,
     }).then((res) => {
-      console.log('writeAssets ======', res);
+      // console.log('writeAssets ======', res);
       // TODO
       should(1).be.deepEqual(1);
       done();

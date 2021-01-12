@@ -12,13 +12,64 @@ export class ImageStorage extends DocStorage {
   }
 
   createItem(item: TypeStorageItem): string {
+    const uuid = this._createItem(item, { pushIndex: true })
+    return uuid;
+  }
+
+  updateItem(item: TypeStorageItem): boolean {
+    if (!(typeof item.uuid === 'string' && item.uuid)) {
+      return false;
+    }
+    const uuid = item.uuid;
+    this._deleteItem(uuid);
+    this._createItem(item);
+    return true;
+  }
+
+
+  queryItem(uuid: string): TypeStorageItem|null {
+    const itemPath = path.join(this._getItemsDir(), uuid[0], `${uuid}.json`);
+    const item = readJson(itemPath) as TypeStorageItem|null;
+    if (typeof item?.content !== 'string') {
+      return null;
+    }
+    let extname = path.extname(item?.content);
+    extname = extname.toLocaleLowerCase();
+    item.content = path.join(`${item.uuid}${extname}`)
+    return item;
+  }
+
+  deleteItem(uuid: string) {
+    this._deleteItem(uuid, { deleteIndex: true });
+  }
+
+  private _deleteItem(uuid: string, opts?: { deleteIndex: boolean }) {
+    const itemPath = path.join(this._getItemsDir(), uuid[0], `${uuid}.json`);
+    const item = readJson(itemPath) as TypeStorageItem|null;
+    if (typeof item?.content !== 'string') {
+      throw Error(`File origin is not existed.`);
+    }
+    let extname = path.extname(item?.content);
+    extname = extname.toLocaleLowerCase();
+    const imagePath = path.join(this._getItemsDir(), uuid[0], `${uuid}${extname}`);
+    fs.rmSync(imagePath);
+    fs.rmSync(itemPath);
+    if (opts && opts.deleteIndex === true) {
+      this._deleteIndex(uuid);
+    }
+  }
+
+  private _createItem(item: TypeStorageItem, opts?: { pushIndex: boolean }): string {
     let uuid = '';
     if (typeof item.uuid === 'string') {
       uuid = item.uuid;
     } else {
       uuid = md5(Math.random().toString(36));
     }
-    item.uuid = uuid;
+    if (this.queryItem(uuid)) {
+      throw new Error(`Doc item[${uuid}] is existed.`)
+    }
+
     const itemBaseDir = path.join(this._getItemsDir(), uuid[0]);
     makeFullDir(itemBaseDir);
 
@@ -41,35 +92,10 @@ export class ImageStorage extends DocStorage {
    
     const itemPath = path.join(itemBaseDir, `${uuid}.json`);
     writeJson(itemPath, {...item, ...{ uuid }});
-    this._pushIndex(uuid);
+    if (opts && opts.pushIndex === true) {
+      this._pushIndex(uuid);
+    }
     return uuid;
-  }
-
-
-  queryItem(uuid: string): TypeStorageItem|null {
-    const itemPath = path.join(this._getItemsDir(), uuid[0], `${uuid}.json`);
-    const item = readJson(itemPath) as TypeStorageItem|null;
-    if (typeof item?.content !== 'string') {
-      return null;
-    }
-    let extname = path.extname(item?.content);
-    extname = extname.toLocaleLowerCase();
-    item.content = path.join(`${item.uuid}${extname}`)
-    return item;
-  }
-
-  deleteItem(uuid: string) {
-    const itemPath = path.join(this._getItemsDir(), uuid[0], `${uuid}.json`);
-    const item = readJson(itemPath) as TypeStorageItem|null;
-    if (typeof item?.content !== 'string') {
-      throw Error(`File origin is not existed.`);
-    }
-    let extname = path.extname(item?.content);
-    extname = extname.toLocaleLowerCase();
-    const imagePath = path.join(this._getItemsDir(), uuid[0], `${uuid}${extname}`);
-    fs.rmSync(imagePath);
-    fs.rmSync(itemPath);
-    this._deleteIndex(uuid);
   }
 
 }

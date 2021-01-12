@@ -36,7 +36,7 @@ export class DocStorage implements TypeStorage {
     }
 
     if (this.queryItem(uuid)) {
-      throw new Error(`Item[${uuid}] is existed.`)
+      throw new Error(`Doc item[${uuid}] is existed.`)
     }
     const itemBaseDir = path.join(this._itemsDir, uuid[0]);
     makeFullDir(itemBaseDir);

@@ -22,7 +22,7 @@ describe('src/doc-engine/index', function () {
       },
       docType: 'gitbook'
     }).then((result) => {
-      console.log('result =====', JSON.stringify(result));
+      // console.log('result =====', JSON.stringify(result));
       should(1).be.deepEqual(1);
       done();
     }).catch(done)

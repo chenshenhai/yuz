@@ -89,6 +89,27 @@ describe('src/storage', function () {
     should(storage.count()).be.deepEqual(2);
   });
 
+  it('ImageStorage.createItem', function () {
+    storage.init({force: true});
+    const uuid = storage.createItem(item);
+
+    const newItem = {
+      uuid: uuid,
+      name: 'Image 002',
+      content: path.join(imgDir, 'yuz-logo-xs.jpg'),
+      creator: 'Yuz',
+    }
+    storage.updateItem(newItem);
+
+    let extname = path.extname(newItem?.content);
+    extname = extname.toLocaleLowerCase();
+
+    should(uuid).be.String;
+    should(fs.existsSync(path.join(baseDir, 'items', uuid[0], `${uuid}.json`))).be.equal(true);
+    should(fs.existsSync(path.join(baseDir, 'items', uuid[0], `${uuid}${extname}`))).be.equal(true);
+  });
+
+
 });
 
 
