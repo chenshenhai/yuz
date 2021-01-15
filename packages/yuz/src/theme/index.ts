@@ -18,7 +18,7 @@ export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
     nextBuild(srcDir, {
       distDir: distDir,
       nextConfig: nextConfig,
-      // basePath: '/page',
+      basePath: '/page',
     }).then(resolve).catch(reject);
   })
 }
