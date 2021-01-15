@@ -101,7 +101,10 @@ export class ThemeServer implements TypeThemeServer {
         })
       
         server.use(async (ctx: any, next: Function) => {
-          ctx.res.statusCode = 200
+          const pagePath: string = ctx.path;
+          if (pagePath && pagePath.startsWith('/page/')) {
+            ctx.res.statusCode = 200;
+          }
           await next()
         })
       
