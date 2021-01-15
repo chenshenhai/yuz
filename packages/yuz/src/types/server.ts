@@ -16,4 +16,12 @@ export type TypeServerOpts = {
   themeDistDir: string;
   themeSrcDir?: string;
   nextConfig?: any;
+  apiHandler?: (ctx: Koa.Context) => Promise<TypeThemeServerAPIResult>
+}
+
+export type TypeThemeServerAPIResult = {
+  success: boolean;
+  code: string;
+  data: any;
+  message: string;
 }

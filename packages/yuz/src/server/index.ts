@@ -69,38 +69,38 @@ export class ThemeServer implements TypeThemeServer {
     }
     const appNext = this._appNext;
     const server = this._serverApp;
-    const handle = appNext.getRequestHandler()
+    const handle = appNext.getRequestHandler();
+    const apiHandler = this._opts.apiHandler;
     return new Promise((resolve, reject) => {
       appNext.prepare().then(() => {
         const router = new Router();
-
-        router.get('/api/:name', async (ctx, next) => {
-          ctx.body = {
-            params: ctx.params
-          };
-          await next();
-        });
       
-        router.get('/page/:pageName', async (ctx) => {
+        router.get('/page/:pageName', async (ctx: Koa.Context) => {
           const { pageName } = ctx.params;
           await appNext.render(ctx.req, ctx.res, `/${pageName}`, ctx.query)
           ctx.respond = false
         })
 
-        router.get('/app/info', async (ctx, next) => {
-          ctx.body = {
-            // name: pkg.name,
-            // version : pkg.version
+        router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
+          if (typeof apiHandler === 'function') {
+            ctx.body = await apiHandler(ctx);
+          }
+          await next();
+        });
+
+        router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
+          if (typeof apiHandler === 'function') {
+            ctx.body = await apiHandler(ctx);
           }
           await next();
         })
 
-        router.all('/page/(.*)', async (ctx) => {
+        router.all('/page/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
           await handle(ctx.req, ctx.res)
           ctx.respond = false
         })
       
-        server.use(async (ctx: any, next: Function) => {
+        server.use(async (ctx: Koa.Context, next: Koa.Next) => {
           const pagePath: string = ctx.path;
           if (pagePath && pagePath.startsWith('/page/')) {
             ctx.res.statusCode = 200;

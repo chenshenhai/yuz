@@ -4,7 +4,16 @@ import { ThemeServer } from '../../src/server';
 async function main() {
   const themeServer = new ThemeServer({
     port: 3000,
-    themeDistDir: path.join(__dirname, '..', 'theme_build', 'theme', 'dist') // './example/server/theme/dist',
+    themeDistDir: path.join(__dirname, '..', 'theme_build', 'theme', 'dist'), // './example/server/theme/dist',
+    apiHandler: async (ctx) => {
+      const result = {
+        success: true,
+        data: ctx.path,
+        code: 'SUCCESS',
+        message: 'success!',
+      };
+      return result;
+    }
   });
   const pid = await themeServer.start();
   console.log(`> The server is starting on http://127.0.0.1:${3000}`)
