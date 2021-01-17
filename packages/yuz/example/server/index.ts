@@ -1,5 +1,6 @@
 import path from 'path';
 import { ThemeServer } from '../../src/server';
+import { TypeServerRequest } from '../../src/types';
 
 async function main() {
   const themeServer = new ThemeServer({
@@ -8,7 +9,7 @@ async function main() {
       // srcDir: path.join(__dirname, '..', 'theme_build', 'theme', 'src'), // './example/server/theme/dist',
       distDir: path.join(__dirname, '..', 'theme_build', 'theme', 'dist'), // './example/server/theme/dist',
     },
-    apiHandler: async (request) => {
+    apiHandler: async (request: TypeServerRequest) => {
       const result = {
         success: true,
         data: request.path,

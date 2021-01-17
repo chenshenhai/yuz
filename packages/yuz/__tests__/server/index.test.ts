@@ -8,6 +8,7 @@ import chai from 'chai';
 import nextBuild from 'next/dist/build';
 import { ThemeServer } from '../../src/server';
 import { removeFullDir } from '../../src/util/file';
+import { TypeServerRequest } from '../../src/types';
 
 
 describe('src/server/index', function () {
@@ -16,7 +17,7 @@ describe('src/server/index', function () {
     this.timeout(60000 * 1);
     const themeServer = new ThemeServer({ 
       port: 3000,
-      apiHandler: async (request) => {
+      apiHandler: async (request: TypeServerRequest) => {
         const result = {
           success: true,
           data: request.path,
@@ -27,7 +28,7 @@ describe('src/server/index', function () {
       }
     });
 
-    themeServer.getServerAppAsync().then((app) => {
+    themeServer.getServerAppAsync().then((app: any) => {
       const request = supertest(app.listen());
       request
       .get('/api/hello')
@@ -39,7 +40,7 @@ describe('src/server/index', function () {
         should(res.body).be.deepEqual({"success":true,"data":"/api/hello","code":"SUCCESS","message":"success!"});
         done();
       });
-    }).catch((err) => {
+    }).catch((err: Error) => {
       console.log(err);
       done(err);
     });

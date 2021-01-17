@@ -10,6 +10,9 @@ export interface TypeThemeServer {
   getServerAppAsync: () => Promise<Koa>
 }
 
+
+export type TypeServerRequest = Koa.Request;
+
 export type TypeServerOpts = {
   dev?: boolean,
   port: number;
@@ -18,8 +21,9 @@ export type TypeServerOpts = {
     srcDir?: string;
   }
   nextConfig?: any;
-  apiHandler?: (request: Koa.Request) => Promise<TypeThemeServerAPIResult>
+  apiHandler?: (request: TypeServerRequest) => Promise<TypeThemeServerAPIResult>
 }
+
 
 export type TypeThemeServerAPIResult = {
   success: boolean;
