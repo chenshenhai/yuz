@@ -39,7 +39,9 @@ describe('src/server/index', function () {
 
       const themeServer = new ThemeServer({ 
         port: 3000,
-        themeDistDir: newfullDistDir,
+        theme: {
+          distDir: newfullDistDir
+        },
       });
 
       themeServer.getServerAppAsync().then((app) => {

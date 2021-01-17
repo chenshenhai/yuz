@@ -5,11 +5,13 @@ import { devThemeAsync } from '../../src/theme';
 
 
 async function main() {
+  const port = 8001;
   const pid = await devThemeAsync({
-    port: 8001,
-    baseDir: path.join(__dirname, 'theme', 'src'),
+    port: port,
+    baseDir: path.join(__dirname, 'theme'),
   });
-  console.log('pid =', pid);
+  console.log(`> The server is starting on http://127.0.0.1:${port}`)
+  console.log('> The process.pid of server is', pid);
 }
 
 main();

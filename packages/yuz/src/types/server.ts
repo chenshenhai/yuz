@@ -13,10 +13,12 @@ export interface TypeThemeServer {
 export type TypeServerOpts = {
   dev?: boolean,
   port: number;
-  themeDistDir: string;
-  themeSrcDir?: string;
+  theme?: {
+    distDir: string;
+    srcDir?: string;
+  }
   nextConfig?: any;
-  apiHandler?: (ctx: Koa.Context) => Promise<TypeThemeServerAPIResult>
+  apiHandler?: (request: Koa.Request) => Promise<TypeThemeServerAPIResult>
 }
 
 export type TypeThemeServerAPIResult = {

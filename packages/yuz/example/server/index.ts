@@ -4,11 +4,14 @@ import { ThemeServer } from '../../src/server';
 async function main() {
   const themeServer = new ThemeServer({
     port: 3000,
-    themeDistDir: path.join(__dirname, '..', 'theme_build', 'theme', 'dist'), // './example/server/theme/dist',
-    apiHandler: async (ctx) => {
+    theme: {
+      // srcDir: path.join(__dirname, '..', 'theme_build', 'theme', 'src'), // './example/server/theme/dist',
+      distDir: path.join(__dirname, '..', 'theme_build', 'theme', 'dist'), // './example/server/theme/dist',
+    },
+    apiHandler: async (request) => {
       const result = {
         success: true,
-        data: ctx.path,
+        data: request.path,
         code: 'SUCCESS',
         message: 'success!',
       };

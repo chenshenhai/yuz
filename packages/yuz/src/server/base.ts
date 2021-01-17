@@ -10,7 +10,7 @@ const Server = Koa.default;
 export class ThemeServer implements TypeThemeServer {
 
   private _opts: TypeServerOpts;
-  private _appNext: any;
+  private _appNext?: any;
   private _serverApp: any;
   private _status: TypeServerStatus;
   private _pid: number = -1;
@@ -21,18 +21,23 @@ export class ThemeServer implements TypeThemeServer {
     this._opts = opts;
     this._isDev = !!opts.dev;
     const cwdPath = process.cwd();
-    const nextDistDir = opts.themeDistDir.replace(cwdPath, '');
-    this._appNext = next({
-      dev: this._isDev,
-      dir: opts.themeSrcDir,
-      conf: {
-        ...opts.nextConfig,
-        ...{
-          distDir: nextDistDir,
-          basePath: '/page'
+    const themeConf = opts.theme;
+    if (themeConf) {
+      const { distDir, srcDir } = themeConf;
+
+      const nextDistDir = distDir.replace(cwdPath, '');
+      this._appNext = next({
+        dev: this._isDev,
+        dir: srcDir,
+        conf: {
+          ...opts.nextConfig || {},
+          ...{
+            distDir: nextDistDir,
+            basePath: '/page'
+          }
         }
-      }
-    });
+      });
+    }
     this._serverApp = new Server();
   }
 
@@ -83,14 +88,14 @@ export class ThemeServer implements TypeThemeServer {
 
         router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
           if (typeof apiHandler === 'function') {
-            ctx.body = await apiHandler(ctx);
+            ctx.body = await apiHandler(ctx.request);
           }
           await next();
         });
 
         router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
           if (typeof apiHandler === 'function') {
-            ctx.body = await apiHandler(ctx);
+            ctx.body = await apiHandler(ctx.request);
           }
           await next();
         })

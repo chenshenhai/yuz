@@ -34,8 +34,10 @@ export function devThemeAsync(opts: TypeDevThemeOptions): Promise<number> {
     dev: true,
     port: port,
     nextConfig: nextConfig,
-    themeDistDir: distDir,
-    themeSrcDir: srcDir,
+    theme: {
+      distDir,
+      srcDir,
+    }
   });
   return server.start();
 }
