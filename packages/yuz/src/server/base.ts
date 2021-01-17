@@ -73,51 +73,68 @@ export class ThemeServer implements TypeThemeServer {
       return Promise.resolve();
     }
     const appNext = this._appNext;
-    const server = this._serverApp;
-    const handle = appNext.getRequestHandler();
-    const apiHandler = this._opts.apiHandler;
     return new Promise((resolve, reject) => {
-      appNext.prepare().then(() => {
-        const router = new Router();
-      
+      if (appNext) {
+        appNext.prepare().then(() => {
+          this._initServerAsync().then(resolve).catch(reject);
+        }).catch(reject)
+      } else {
+        this._initServerAsync().then(resolve).catch(reject);
+      }
+    })
+  }
+
+  private _initServerAsync(): Promise<void> {
+    if (this._status === TypeServerStatus.HAS_INITED) {
+      return Promise.resolve();
+    }
+    const appNext = this._appNext;
+    const server = this._serverApp;
+    const apiHandler = this._opts.apiHandler;
+
+    return new Promise((resolve) => {
+      const router = new Router();
+
+      // init next page router
+      if(appNext) {
         router.get('/page/:pageName', async (ctx: Koa.Context) => {
           const { pageName } = ctx.params;
           await appNext.render(ctx.req, ctx.res, `/${pageName}`, ctx.query)
           ctx.respond = false
         })
-
-        router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
-          if (typeof apiHandler === 'function') {
-            ctx.body = await apiHandler(ctx.request);
-          }
-          await next();
-        });
-
-        router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
-          if (typeof apiHandler === 'function') {
-            ctx.body = await apiHandler(ctx.request);
-          }
-          await next();
-        })
-
+        const handle = appNext.getRequestHandler();
         router.all('/page/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
           await handle(ctx.req, ctx.res)
           ctx.respond = false
         })
+      }
       
-        server.use(async (ctx: Koa.Context, next: Koa.Next) => {
-          const pagePath: string = ctx.path;
-          if (pagePath && pagePath.startsWith('/page/')) {
-            ctx.res.statusCode = 200;
-          }
-          await next()
-        })
-      
-        server.use(router.routes());
+      router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
+        if (typeof apiHandler === 'function') {
+          ctx.body = await apiHandler(ctx.request);
+        }
+        await next();
+      });
 
-        this._status = TypeServerStatus.HAS_INITED;
-        resolve();
-      }).catch(reject)
+      router.get('/api/(.*)', async (ctx: Koa.Context, next: Koa.Next) => {
+        if (typeof apiHandler === 'function') {
+          ctx.body = await apiHandler(ctx.request);
+        }
+        await next();
+      });
+    
+      server.use(async (ctx: Koa.Context, next: Koa.Next) => {
+        const pagePath: string = ctx.path;
+        if (pagePath && pagePath.startsWith('/page/')) {
+          ctx.res.statusCode = 200;
+        }
+        await next()
+      })
+    
+      server.use(router.routes());
+
+      this._status = TypeServerStatus.HAS_INITED;
+      resolve();
     })
   }
 }
