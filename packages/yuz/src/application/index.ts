@@ -4,7 +4,7 @@ import { loadJsonSync } from './../util/file';
 import { ThemeServer } from './../server';
 import { TypeApplicationOptions, TypeApplication,  TypeAppConfig,} from './../types';
 
-
+// TODO
 export class Application extends EventEmitter implements TypeApplication  {
 
   private _opts: TypeApplicationOptions;
@@ -26,11 +26,15 @@ export class Application extends EventEmitter implements TypeApplication  {
     const config = this._loadConfig();
     const portalServer = new ThemeServer({
       port: config.theme.portal.port,
-      themeDistDir: path.join(baseDir, 'themes', config.theme.portal.baseDirName, 'dist'),
+      theme: {
+        distDir: path.join(baseDir, 'themes', config.theme.portal.baseDirName, 'dist'),
+      }
     });
     const adminServer = new ThemeServer({
       port: config.theme.admin.port,
-      themeDistDir: path.join(baseDir, 'themes', config.theme.admin.baseDirName, 'dist'),
+      theme: {
+        distDir: path.join(baseDir, 'themes', config.theme.admin.baseDirName, 'dist'),
+      }
     });
 
     this._portalServer = portalServer;
