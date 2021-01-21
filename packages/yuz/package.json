@@ -5,8 +5,6 @@
   "main": "index.js",
   "bin": "bin/yuz.js",
   "scripts": {
-    "install-cnpm": "npm i -g cnpm",
-    "install-react": "npm i react@17 react-dom@17",
     "ci": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/**/*.test.ts",
     "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
