@@ -1,5 +1,5 @@
 {
-  "npmClient": "cnpm",
+  "npmClient": "npm",
   "packages": [
     "packages/yuz",
     "packages/yuz-api",
