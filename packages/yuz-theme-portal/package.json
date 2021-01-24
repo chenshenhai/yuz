@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "yuz dev -p 9001 ./",
-    "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
-    "test:all": "mocha -r ts-node/register --exit __tests__/**/*test.ts"
+    "test:all": "mocha -r ts-node/register --exit __tests__/**/*.test.ts"
   },
   "author": "",
   "license": "MIT",
