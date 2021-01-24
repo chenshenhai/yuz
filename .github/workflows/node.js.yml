@@ -26,6 +26,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     # - run: npm ci
     # - run: npm run build --if-present
+    - run: npm shrinkwrap 
     - run: npm install
     - run: npm test
 
@@ -45,6 +46,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     # - run: npm ci
     # - run: npm run build --if-present
+    - run: npm shrinkwrap 
     - run: npm install
     - run: npm test
   
@@ -64,5 +66,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     # - run: npm ci
     # - run: npm run build --if-present
+    - run: npm shrinkwrap 
     - run: npm install
     - run: npm test
