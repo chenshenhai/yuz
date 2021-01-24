@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "test": "lerna bootstrap && lerna run --scope yuz test"
+    "test": "lerna bootstrap && lerna run test",
+    "test:yuz": "lerna bootstrap && lerna run --scope yuz test"
   },
   "devDependencies": {
     "@octokit/core": "^3.2.4",
