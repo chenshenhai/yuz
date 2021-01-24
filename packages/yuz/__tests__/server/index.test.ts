@@ -8,39 +8,61 @@ import chai from 'chai';
 import nextBuild from 'next/dist/build';
 import { ThemeServer } from '../../src/server';
 import { removeFullDir } from '../../src/util/file';
-import { TypeServerRequest } from '../../src/types';
 
 
 describe('src/server/index', function () {
 
   it('server.ThemeServer', function (done) {
     this.timeout(60000 * 1);
-    const themeServer = new ThemeServer({ 
-      port: 3000,
-      apiHandler: async (request: TypeServerRequest) => {
-        const result = {
-          success: true,
-          data: request.path,
-          code: 'SUCCESS',
-          message: 'success!',
-        };
-        return result;
-      }
-    });
+    const baseDir = path.join(__dirname, 'theme');
 
-    themeServer.getServerAppAsync().then((app: any) => {
-      const request = supertest(app.listen());
-      request
-      .get('/api/hello')
-      .expect(200)
-      .end(( err, res ) => {
-        if (err) {
-          return done(err);
-        }
-        should(res.body).be.deepEqual({"success":true,"data":"/api/hello","code":"SUCCESS","message":"success!"});
-        done();
+    const srcDir = path.join(baseDir, 'src');
+    const fullDistDir = path.join(baseDir, '.next');
+    const newfullDistDir = path.join(baseDir, 'dist');
+
+    if (fs.existsSync(fullDistDir)) {
+      removeFullDir(fullDistDir);
+    }
+    if (fs.existsSync(newfullDistDir)) {
+      removeFullDir(newfullDistDir);
+    }
+
+    // @ts-ignore
+    nextBuild(srcDir, {
+      distDir: path.join('..', '.next'),
+      nextConfig: {},
+      // basePath: '/page',
+    }).then((res) => {
+
+
+      fs.renameSync(fullDistDir, newfullDistDir);
+
+      const themeServer = new ThemeServer({ 
+        port: 3000,
+        theme: {
+          distDir: newfullDistDir
+        },
       });
-    }).catch((err: Error) => {
+
+      themeServer.getServerAppAsync().then((app) => {
+        const expect = chai.expect;
+        const request = supertest(app.listen());
+        request
+        .get('/page/a')
+        .expect(200)
+        .end(( err, res ) => {
+          if (err) {
+            return done(err);
+          }
+          expect(res.text).to.be.an('string');
+          should(res.text.indexOf('<div>This is A page</div>') > 0).be.equal(true);
+          done();
+        });
+      }).catch((err) => {
+        console.log(err);
+        done(err);
+      });
+    }).catch((err) => {
       console.log(err);
       done(err);
     });

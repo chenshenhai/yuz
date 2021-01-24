@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "test": "lerna bootstrap --no-ci && lerna run build && lerna run test",
-    "test:yuz": "lerna bootstrap --no-ci && lerna run build && lerna run --scope yuz test"
+    "test:yuz": "lerna bootstrap --no-ci && lerna run build && lerna run --scope yuz test",
+    "test:all": "lerna bootstrap --no-ci && lerna run build && lerna run test:all"
   },
   "devDependencies": {
     "@octokit/core": "^3.2.4",
