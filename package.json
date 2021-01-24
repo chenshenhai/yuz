@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test:all": "lerna bootstrap && lerna run build && lerna run test",
+    "test:all": "lerna bootstrap --no-ci && lerna run build && lerna run test",
     "test": "lerna bootstrap && lerna run --scope yuz test"
   },
   "devDependencies": {
