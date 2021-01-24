@@ -11,7 +11,7 @@ import 'mocha';
 
 describe('page/foo', function () {
   it('page/foo render', function (done) {
-    this.timeout(1000 * 60);
+    this.timeout(1000 * 60 * 2);
 
     runDevServer();
     
@@ -27,7 +27,7 @@ describe('page/foo', function () {
         done();
       }).catch(done);
       
-    }, 1000 * 20);
+    }, 1000 * 60);
     
   });
 });
