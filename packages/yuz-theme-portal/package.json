@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "yuz dev -p 9001 ./"
+    "dev": "yuz dev -p 9001 ./",
+    "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
+    "test:all": "mocha -r ts-node/register --exit __tests__/**/*test.ts"
   },
   "author": "",
   "license": "MIT",
@@ -13,8 +15,16 @@
     "react-dom": "^17.0.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "axios": "^0.21.1",
+    "mocha": "^8.2.1",
+    "should": "^13.2.3",
+    "supertest": "^5.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3",
     "yuz": "^0.0.1-alpha.2"
   },
   "files": [
