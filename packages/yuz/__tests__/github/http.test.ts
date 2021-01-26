@@ -2,10 +2,10 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { downloadGithubZip } from '../../src/doc-engine/download';
+import { downloadGithubZip } from '../../src/github/http';
 
 
-describe('src/doc-engine/download', function () {
+describe('src/src/github/http', function () {
   it('downloadGithubZip', function (done) {
     this.timeout(60000 * 4);
     downloadGithubZip({

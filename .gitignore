@@ -106,3 +106,5 @@ dist
 
 dist/
 *.json.lerna_backup
+
+.DS_Store
