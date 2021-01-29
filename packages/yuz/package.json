@@ -9,7 +9,7 @@
     "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
     "test:local": "mocha -r ts-node/register --exit __tests__/**/*test.ts",
-    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/server/index.test.ts",
+    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/github/http.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
     "example:server": "ts-node example/server/index.ts",
@@ -31,6 +31,7 @@
   "homepage": "https://github.com/yuzjs/yuz#readme",
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "@octokit/core": "^3.2.5",
     "archiver": "^5.1.0",
     "axios": "^0.21.1",
     "commander": "^6.1.0",

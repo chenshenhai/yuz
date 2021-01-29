@@ -1,6 +1,5 @@
 import fs from 'fs';
-import path from 'path';
-import axios from 'axios';
+import { Octokit } from '@octokit/core';
 import { makeFullDir, removeFullDir } from '../util/file';
 import { downloadFile } from '../util/download';
 
@@ -19,6 +18,20 @@ export async function downloadGithubZip(params: {
 }
 
 
+export async function getRepoLastestCommitSHA(
+  params: { owner: string, repo: string, ref: string,}
+) : Promise<string|null> {
+  const octokit = new Octokit();
+  const { owner, repo, ref } = params;
+  let sha = null;
+  const res = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
+    owner, repo, ref
+  });
+  if (res && res.status === 200 && res.data && typeof res.data.sha === 'string') {
+    sha = res.data.sha;
+  }
+  return sha;
+}
 
 // https://api.github.com/repos/yuzjs/example-gitbook
 // https://api.github.com/repos/yuzjs/example-gitbook/commits
