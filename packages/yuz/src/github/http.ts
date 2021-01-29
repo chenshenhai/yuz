@@ -33,6 +33,26 @@ export async function getRepoLastestCommitSHA(
   return sha;
 }
 
+export async function downloadRepoZip(
+  params: { owner: string, repo: string, ref: string, },
+  opts: { savePath: string },
+) : Promise<any> {
+  // const octokit = new Octokit();
+  const { owner, repo, ref } = params;
+  const { savePath } = opts;
+  // const url = `https://api.github.com/repos/${owner}/${repo}/zipball/REF`;
+  // const res = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
+  //   owner,
+  //   repo,
+  //   ref,
+  // });
+  const url = `https://api.github.com/repos/${owner}/${repo}/zipball/${ref}`;
+  if (fs.existsSync(savePath) && fs.statSync(savePath).isFile()) {
+    fs.unlinkSync(savePath);
+  }
+  return downloadFile(url, savePath);
+}
+
 // https://api.github.com/repos/yuzjs/example-gitbook
 // https://api.github.com/repos/yuzjs/example-gitbook/commits
 // https://api.github.com/repos/yuzjs/example-gitbook/compare/yuzjs:2f80920...yuzjs:e98545b
