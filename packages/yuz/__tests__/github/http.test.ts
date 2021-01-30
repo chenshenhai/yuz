@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { getRepoLastestCommitSHA, downloadRepoZip, downloadGithubZip } from '../../src/github/http';
+import { getRepoLastestCommitSHA, compareRepoCommits, downloadRepoZip, downloadGithubZip } from '../../src/github/http';
 
 
 describe('src/src/github/http', function () {
@@ -35,6 +35,29 @@ describe('src/src/github/http', function () {
     }).then((res: any) => {
       should(res).be.String();
       should(res.length).be.deepEqual(40);
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  });
+
+  it('compareRepoCommits', function (done) {
+    this.timeout(60000 * 4);
+    compareRepoCommits({
+      owner: 'yuzjs',
+      repo: 'example-gitbook',
+      beforeCommit: '2f80920e4658a1f716ea41641f0128ac24e180b4',
+      afterCommit: 'e98545b466cca52b53915fd0eb0bbea39ebeda2d',
+    }).then((res: any) => {
+      should(res).be.deepEqual([
+        { filename: 'README.md', status: 'modified' },
+        { filename: 'SUMMARY.md', status: 'added' },
+        { filename: 'docs/001.md', status: 'added' },
+        { filename: 'docs/002.md', status: 'added' },
+        { filename: 'docs/101.md', status: 'added' },
+        { filename: 'docs/102.md', status: 'added' },
+        { filename: 'images/yuz-logo.png', status: 'added' }
+      ]);
       done();
     }).catch(err => {
       done(err);
