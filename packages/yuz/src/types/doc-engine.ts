@@ -7,8 +7,8 @@ export type TypeDocEngineOptions = {
 
 export type TypeDocEngineStep 
 = 'FREE'
+ | 'CHECK_LOCAL_DOC' // checkout 
  | 'LOAD_REMOTE_DOC'
- | 'PULL_REMOTE_DOC'
  | 'READ_LAST_DOC_SNAPSHOT'
  | 'CREATE_DOC_SNAPSHOT'
  | 'DIFF_DOC_SNAPSHOT'
@@ -20,6 +20,7 @@ export type TypeDocEngineRecord = {
   step: TypeDocEngineStep,
   data: any,
   success: boolean;
+  message?: string;
 }
 
 export type TypeDocEngineResult = TypeDocEngineProcessParams & {
@@ -31,9 +32,9 @@ export type TypeDocEngineRemoteType = 'GITHUB';  // | 'GITHUB_ZIP' | 'UPLOAD';
 
 export type TypeDocEngineProcessParams = {
   remote: {
-    user: string,
-    repository: string,
-    version: string;
+    owner: string,
+    repo: string,
+    // version: string;
     type?: TypeDocEngineRemoteType;
   },
   docType: TypeReadDocType;

@@ -42,8 +42,6 @@ export class Writer extends EventEmitter implements TypeWriter  {
           uuid: doc.id,
           name: doc.name,
           content: content,
-          createTime: Date.now(),
-          lastTime: Date.now(),
           creator: '',
         });
         result.logs.push({
@@ -96,8 +94,6 @@ export class Writer extends EventEmitter implements TypeWriter  {
             uuid: doc.id,
             name: doc.name,
             content: content,
-            createTime: Date.now(),
-            lastTime: Date.now(),
             creator: '',
           });
         } else if (['DELETED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {

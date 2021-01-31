@@ -15,12 +15,13 @@ export class Reader extends EventEmitter implements TypeReader  {
     super();
   }
   
-  async createSnapshot(baseDir: string, opts: { type: TypeReadDocType, name: string }): Promise<TypeDocSnapshot> {
-    const { name } = opts;
+  async createSnapshot(baseDir: string, opts: { type: TypeReadDocType, name: string, sha: string }): Promise<TypeDocSnapshot> {
+    const { name, sha } = opts;
     const docList: TypeReadList = await this.readDocList(baseDir, opts);
     const imageList = await this.readImageList(baseDir, docList);
     const now = Date.now();
     const snapshot: TypeDocSnapshot = { 
+      sha,
       time: now,
       docMap: {},
       imageMap: {},
@@ -35,8 +36,6 @@ export class Reader extends EventEmitter implements TypeReader  {
           id,
           name: item.name,
           path: docPath,
-          createTime: item.createTime || 0,
-          lastTime: item.lastTime || 0,
           status,
         }
       }
@@ -52,8 +51,6 @@ export class Reader extends EventEmitter implements TypeReader  {
           id,
           name: item.name,
           path: imgPath,
-          createTime: item.createTime || 0,
-          lastTime: item.lastTime || 0,
           status,
         }
       }
@@ -109,8 +106,6 @@ export class Reader extends EventEmitter implements TypeReader  {
           name,
           path,
           absolutePath,
-          createTime: infoMap[path]?.createTime,
-          lastTime: infoMap[path]?.lastTime,
         })
       })
 
@@ -147,8 +142,6 @@ export class Reader extends EventEmitter implements TypeReader  {
         name: '',
         path: p,
         absolutePath: path.join(baseDir, p),
-        createTime: item?.createTime,
-        lastTime: item?.lastTime,
       })
     });
 
@@ -175,29 +168,29 @@ export class Reader extends EventEmitter implements TypeReader  {
     const afterIds = Object.keys(after);
     const diffMap: TypeDiffDocSnapshot['docMap'] | TypeDiffDocSnapshot['imageMap'] = {}
 
-    beforeIds.forEach((id: string) => {
-      if (after[id] && before) {
-        if(after[id].lastTime > before[id].lastTime) {
-          if (after[id].status === 'EXISTED') {
-            diffMap[id] = { status: 'EDITED' };
-          } else {
-            diffMap[id] = { status: 'DELETED' };
-          }
-        }
-      } else {
-        diffMap[id] = { status: 'DELETED' };
-      }
-    });
+    // beforeIds.forEach((id: string) => {
+    //   if (after[id] && before) {
+    //     if(after[id].lastTime > before[id].lastTime) {
+    //       if (after[id].status === 'EXISTED') {
+    //         diffMap[id] = { status: 'EDITED' };
+    //       } else {
+    //         diffMap[id] = { status: 'DELETED' };
+    //       }
+    //     }
+    //   } else {
+    //     diffMap[id] = { status: 'DELETED' };
+    //   }
+    // });
 
-    afterIds.forEach((id: string) => {
-      if (before && before[id]) {
-        if (before[id].status === 'NOT_EXISTED') {
-          diffMap[id] = { status: 'CREATED' };
-        }
-      } else {
-        diffMap[id] = { status: 'CREATED' };
-      }
-    });
+    // afterIds.forEach((id: string) => {
+    //   if (before && before[id]) {
+    //     if (before[id].status === 'NOT_EXISTED') {
+    //       diffMap[id] = { status: 'CREATED' };
+    //     }
+    //   } else {
+    //     diffMap[id] = { status: 'CREATED' };
+    //   }
+    // });
     return diffMap;
   }
 }

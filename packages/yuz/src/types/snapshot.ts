@@ -1,13 +1,12 @@
 export type TypeDocSnapshot = {
   name?: string; // ${site}/${user}/${repos}
+  sha?: string;
   time: number;
   docMap: {
     [id: string]: {
       id: string; // path md5 uuid
       name: string;
       path: string;
-      createTime: number;
-      lastTime: number;
       status: 'EXISTED' | 'NOT_EXISTED'
     }
   }
@@ -16,8 +15,6 @@ export type TypeDocSnapshot = {
       id: string; // path md5 uuid
       name?: string;
       path: string;
-      createTime: number;
-      lastTime: number;
       status: 'EXISTED' | 'NOT_EXISTED';
     }
   };

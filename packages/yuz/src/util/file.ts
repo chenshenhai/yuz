@@ -93,3 +93,19 @@ export function getMaxNumFileName(baseDir: string): string|null {
 	}
   return numName;
 }
+
+export function isDirExited(dirPath: string): boolean {
+  return (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory());
+}
+
+export function isFileExited(filePath: string): boolean {
+  return (fs.existsSync(filePath) && fs.statSync(filePath).isFile());
+}
+
+export function removeFileOrDir(filePath: string) {
+  if (isDirExited(filePath) === true) {
+    removeFullDir(filePath);
+  } else if (isFileExited(filePath) === true) {
+    fs.rmSync(filePath);
+  }
+}

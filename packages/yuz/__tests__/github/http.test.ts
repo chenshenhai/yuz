@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import should from 'should';
 import 'mocha';
-import { getRepoLastestCommitSHA, compareRepoCommits, downloadRepoZip, downloadGithubZip } from '../../src/github/http';
+import { getRepoLastestCommitSHA, compareRepoCommits, downloadRepoZip, getRepoInfo, downloadGithubZip, } from '../../src/github/http';
 
 
 describe('src/src/github/http', function () {
@@ -63,6 +63,21 @@ describe('src/src/github/http', function () {
       done(err);
     });
   });
+
+  it('getRepoInfo', function(done) {
+    this.timeout(60000 * 4);
+    getRepoInfo({
+      owner: 'yuzjs',
+      repo: 'example-gitbook',
+    }).then((res: any) => {
+      should(res.owner).be.deepEqual('yuzjs');
+      should(res.createdTime).be.Number;
+      should(res.updatedTime).be.Number;
+      done();
+    }).catch(err => {
+      done(err);
+    });
+  })
 
 
   it('downloadRepoZip', function (done) {
