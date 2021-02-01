@@ -11,6 +11,7 @@ import { getRepoLastestCommitSHA, getRepoInfo, compareRepoCommits, downloadRepoZ
 import { getNowDateList } from './../util/date';
 import { Reader } from './reader';
 import { Writer } from './writer';
+import { checkLocalDoc, loadRemoteDoc, createDocSnapshot, TypeTaskDataCheckLocalDoc } from './github-task';
 
 
 export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
@@ -83,41 +84,14 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     const { remote } = params;
     const { owner, repo } = remote;
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
-      const data: {
-        isUpdated: boolean;
-        isExisted: boolean;
-        isModifedAll: boolean;
-        lastestSHA: null|string;
-        modifiedFiles: TypeGithubRepoCompareItem[];
-      } = {
-        isUpdated: false,
-        isExisted: false,
-        isModifedAll: true,
-        lastestSHA: null,
-        modifiedFiles: []
-      };
-      let success: boolean = true;
+      const data = await checkLocalDoc({
+        owner,
+        repo,
+        remoteDir: this._remoteDir,
+        snapshotDir: this._snapshotDir,
+        reader: this._reader,
+      });
       const step = 'CHECK_LOCAL_DOC';
-      const localDir = path.join(this._remoteDir, 'github', owner, repo);
-      const snapshot = await this._reader.readLastSnapshot(this._snapshotDir);
-      if (isDirExited(localDir) && snapshot && typeof snapshot.sha === 'string') {
-        data.isExisted = true;
-      }
-
-      const lastestSHA = await getRepoLastestCommitSHA({ owner, repo });
-      data.lastestSHA = lastestSHA;
-      if (data.isExisted === true) {
-        data.isModifedAll = false;
-        if (snapshot && snapshot.sha && lastestSHA && lastestSHA !== snapshot?.sha) {
-          const compareFiles: TypeGithubRepoCompareItem[] = await compareRepoCommits({ owner, repo, beforeCommit: snapshot?.sha, afterCommit: lastestSHA });
-          data.modifiedFiles = compareFiles;
-        }
-      }
-
-      if (data.isModifedAll === true || data.modifiedFiles.length > 0) {
-        data.isUpdated = true;
-      }
-
       ctx.steps.push(step);
       ctx.stepMap[step] = {
         step,
@@ -135,21 +109,15 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
 
       const checkData = ctx.stepMap['CHECK_LOCAL_DOC']?.data;
       const lastestSHA = checkData?.lastestSHA;
-      const data = {  };
       
-      if (checkData?.isUpdated === true && typeof lastestSHA === 'string') {
-        const localDir = path.join(this._remoteDir, 'github', owner, repo);
-        const saveCacheDir = path.join(this._remoteDir, 'github', '.cache', owner, repo);
-        const saveCachePath = path.join(saveCacheDir, `${lastestSHA}.zip`);
-        if (!(fs.existsSync(saveCachePath) && fs.statSync(saveCachePath).isFile())) {
-          await downloadRepoZip({ owner, repo, ref: lastestSHA }, { savePath: saveCachePath });
-        }
-
-        removeFullDir(localDir);
-        await unzip(saveCachePath, path.join(saveCacheDir, lastestSHA));
-        makeFullDir(localDir);
-        fs.renameSync(path.join(saveCacheDir, lastestSHA, `${owner}-${repo}-${lastestSHA.substr(0, 7)}`), localDir);
-      }
+      const data = await loadRemoteDoc({
+        owner,
+        repo,
+        remoteDir: this._remoteDir,
+        snapshotDir: this._snapshotDir,
+        checkLocalDocData: checkData as TypeTaskDataCheckLocalDoc,
+      })
+      
       const step = 'LOAD_REMOTE_DOC';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
@@ -164,26 +132,29 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
   private async _pushTaskCreateDocSnapshot(params: TypeDocEngineProcessParams) {
     const { remote, docType } = params;
     const { owner, repo } = remote;
+    
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
 
       const checkData = ctx.stepMap['CHECK_LOCAL_DOC']?.data;
       const loadData = ctx.stepMap['LOAD_REMOTE_DOC']?.data;
-      const lastestSHA = checkData?.lastestSHA;
-      const localPath = path.join(this._remoteDir, 'github', owner, repo);
-      const snapshot = await this._reader.createSnapshot(
-        localPath, { type: docType, name: `github/${owner}/${repo}`, sha: lastestSHA }
-      );
-      const dateList = getNowDateList();
-      const snapshotDir = path.join(this._snapshotDir, ...dateList);
-      const snapshotPath = path.join(snapshotDir, `${Date.now()}.json`);
-      makeFullDir(snapshotDir)
-      writeJson(snapshotPath, snapshot);
+      
+      const data = await createDocSnapshot({
+        owner,
+        repo,
+        docType,
+        remoteDir: this._remoteDir,
+        snapshotDir: this._snapshotDir,
+        reader: this._reader,
+        checkLocalDocData: checkData as TypeTaskDataCheckLocalDoc,
+      })
+
+      
       const step = 'CREATE_DOC_SNAPSHOT';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
         step,
         success: true,
-        data: snapshot
+        data: data
       }
       await next();
     });

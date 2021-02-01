@@ -7,7 +7,7 @@ export type TypeReadItem = {
   absolutePath: string;
 }
 
-export type TypeReadDocType = 'gitbook' | 'vuepress';
+export type TypeReadDocType = 'gitbook'; // | 'vuepress';
 
 export type TypeReadList = TypeReadItem[];
 
