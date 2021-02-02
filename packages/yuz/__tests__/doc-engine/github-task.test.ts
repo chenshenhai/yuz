@@ -28,6 +28,7 @@ describe('src/doc-engine/github-task', function () {
       should(data.isUpdated).be.Boolean;
       should(data.lastestSHA).be.String;
       should(data.modifiedFiles).be.Array;
+      done();
     }).catch(done);
   });
 
@@ -51,15 +52,15 @@ describe('src/doc-engine/github-task', function () {
       }
     }).then((data) => {
       should(data.needLoadRemote).be.deepEqual(true);
+      done();
     }).catch(done);
   });
 
 
   it('createDocSnapshot', function (done) {
-
     this.timeout(60000 * 3);
     const baseDir = path.join(__dirname, '..', '__assets__', 'dist', 'doc-engine');
-    removeFileOrDir(baseDir);
+    const sha = 'e98545b466cca52b53915fd0eb0bbea39ebeda2d';
     createDocSnapshot({
       owner: 'yuzjs',
       repo: 'example-gitbook',
@@ -71,14 +72,15 @@ describe('src/doc-engine/github-task', function () {
         "isUpdated": true,
         "isExisted": false,
         "isModifedAll": true,
-        "lastestSHA": "e98545b466cca52b53915fd0eb0bbea39ebeda2d",
+        "lastestSHA": sha,
         "modifiedFiles": []
       }
     }).then((data) => {
-      console.log('data ======', JSON.stringify(data, null, 2));
-      should(1).be.deepEqual(1);
+      should(data.snapshot.sha).be.deepEqual(sha);
+      should(data.snapshot.docMap).be.Object;
+      should(data.snapshot.imageMap).be.Object;
+      done();
     }).catch(done);
-
   });
 
 
