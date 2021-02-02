@@ -1,17 +1,17 @@
 import process from 'process';
-import * as Koa from 'koa';
+import { Server } from 'net';
+import Koa from 'koa';
 import Router from '@koa/router';
 import next from 'next';
 import { TypeServerStatus, TypeThemeServer, TypeServerOpts } from './../types';
 // import pkg from './../../package.json';
 
-const Server = Koa.default;
-
 export class ThemeServer implements TypeThemeServer {
 
   private _opts: TypeServerOpts;
   private _appNext?: any;
-  private _serverApp: any;
+  private _serverApp: Koa;
+  private _serverTarget: Server|null = null;
   private _status: TypeServerStatus;
   private _pid: number = -1;
   private _isDev: boolean = false;
@@ -38,14 +38,14 @@ export class ThemeServer implements TypeThemeServer {
         }
       });
     }
-    this._serverApp = new Server();
+    this._serverApp = new Koa();
   }
 
   start(): Promise<number> {
     const { port } = this._opts;
     return new Promise((resolve, reject) => {
       this._initAppAsync().then(() => {
-        this._serverApp.listen(port, () => {
+        this._serverTarget = this._serverApp.listen(port, () => {
           const pid: number = process.pid;
           this._pid = pid;
           resolve(pid);
@@ -55,8 +55,8 @@ export class ThemeServer implements TypeThemeServer {
   }
 
   close() {
-    if (this._pid > 0) {
-      return process.kill(this._pid);
+    if (this._serverTarget) {
+      this._serverTarget.close();
     }
   }
 

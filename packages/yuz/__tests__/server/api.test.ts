@@ -4,6 +4,7 @@ import fs from 'fs';
 import should from 'should';
 import supertest from 'supertest';
 import chai from 'chai';
+import axios from 'axios';
 
 import nextBuild from 'next/dist/build';
 import { ThemeServer } from '../../src/server';
@@ -28,22 +29,35 @@ describe('src/server/index', function () {
       }
     });
 
-    themeServer.getServerAppAsync().then((app: any) => {
-      const request = supertest(app.listen());
-      request
-      .get('/api/hello')
-      .expect(200)
-      .end(( err, res ) => {
-        if (err) {
-          return done(err);
-        }
-        should(res.body).be.deepEqual({"success":true,"data":"/api/hello","code":"SUCCESS","message":"success!"});
+    themeServer.start().then(() => {
+      axios.get('http://127.0.0.1:3000/api/hello').then(function (res) {
+        should(res.status).be.deepEqual(200);
+        should(res.statusText).be.deepEqual('OK');
+        should(res.data).be.deepEqual({"success":true,"data":"/api/hello","code":"SUCCESS","message":"success!"});
+        themeServer.close();
         done();
-      });
-    }).catch((err: Error) => {
-      console.log(err);
-      done(err);
-    });
+      }).catch(done);
+    }).catch(done);
+
+    
+
+
+    // themeServer.getServerAppAsync().then((app: any) => {
+    //   const request = supertest(app.listen());
+    //   request
+    //   .get('/api/hello')
+    //   .expect(200)
+    //   .end(( err, res ) => {
+    //     if (err) {
+    //       return done(err);
+    //     }
+    //     should(res.body).be.deepEqual({"success":true,"data":"/api/hello","code":"SUCCESS","message":"success!"});
+    //     done();
+    //   });
+    // }).catch((err: Error) => {
+    //   console.log(err);
+    //   done(err);
+    // });
 
   });
 });
