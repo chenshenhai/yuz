@@ -110,10 +110,18 @@ export async function getRepoInfo(params: { owner: string, repo: string }): Prom
 // https://api.github.com/repos/yuzjs/example-gitbook
 // https://api.github.com/repos/yuzjs/example-gitbook/commits
 // https://api.github.com/repos/yuzjs/example-gitbook/commits?since=2020-12-27T05:18:49Z&until=2020-12-27T05:18:50Z
-// https://api.github.com/repos/yuzjs/example-gitbook/compare/yuzjs:2f80920...yuzjs:e98545b
-// https://api.github.com/repos/yuzjs/example-gitbook/compare/yuzjs:2f80920...yuzjs:e98545b
+// https://api.github.com/repos/yuzjs/example-gitbook/compare/yuzjs:2f80920...yuzjs:e98545b 
+// https://api.github.com/repos/yuzjs/example-gitbook/compare/yuzjs:6631c35...yuzjs:0410504
 // https://api.github.com/repos/yuzjs/example-gitbook/commits/e98545b466cca52b53915fd0eb0bbea39ebeda2d
 // https://api.github.com/repos/yuzjs/example-gitbook/contents/SUMMARY.md
 // https://api.github.com/repos/yuzjs/example-gitbook/contents/
 // 30425b7431173a91c7f78592296a850f7fd3da6b
 // c5a82a1881f8275071dbe5c0dcf14adddc5dd90b
+
+// e98545b466cca52b53915fd0eb0bbea39ebeda2d
+// 04105040cdd1372531c5f3550cc7a5207244d47c
+// 6631c35a5edd8cce175d789522bed01aef647204
+// bc73b5d3fea89b57d8072fc92f563db1fe9a0869
+// 384094e0a253d7044ccf991037418eb324eedc4e
+// dfe3f4de60b463c7f03be35e42938e8a3255f091
+// 1f8c31944b760f82b49f47a518f568d17fc9928f

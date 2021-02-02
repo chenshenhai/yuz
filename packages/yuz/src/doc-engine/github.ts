@@ -58,14 +58,10 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     // | 'CHECK_LOCAL_DOC' // checkout 
     // | 'LOAD_REMOTE_DOC'
     // | 'CREATE_DOC_SNAPSHOT'
-    // | 'DIFF_DOC_SNAPSHOT'
-    // | 'REFRESH_DOC_POSTS';
 
     this._pushTaskCheckLoadDoc(params);
     this._pushTaskLoadRemoteDoc(params);
     this._pushTaskCreateDocSnapshot(params);
-    // this._pushTaskDiffDocSnapshot(params);
-    // this._pushTaskRefreshDoc(params);
 
     const result = {
       steps: [],
@@ -157,52 +153,5 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
       await next();
     });
   }
-
-  // private async _pushTaskReadLastDocSnapshot(params: TypeDocEngineProcessParams) {
-  //   this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
-  //     const snapshot = await this._reader.readLastSnapshot(this._snapshotDir);
-  //     const step = 'READ_LAST_DOC_SNAPSHOT';
-  //     ctx.steps.push(step);
-  //     ctx.stepMap[step] = {
-  //       step,
-  //       success: true,
-  //       data: snapshot
-  //     }
-  //     await next();
-  //   });
-  // }
-
-  // private async _pushTaskDiffDocSnapshot(params: TypeDocEngineProcessParams) {
-  //   this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
-  //     const step = 'DIFF_DOC_SNAPSHOT';
-  //     const before: TypeDocSnapshot|null = ctx.stepMap['READ_LAST_DOC_SNAPSHOT'].data as TypeDocSnapshot|null;
-  //     const after: TypeDocSnapshot = ctx.stepMap['CREATE_DOC_SNAPSHOT'].data as TypeDocSnapshot;
-  //     const diff = await this._reader.diffSnapshot(before, after);
-  //     ctx.steps.push(step);
-  //     ctx.stepMap[step] = {
-  //       step,
-  //       success: true,
-  //       data: diff
-  //     }
-  //     await next();
-  //   });
-  // }
-
-  // private async _pushTaskRefreshDoc(params: TypeDocEngineProcessParams) {
-  //   // const { remote, docType } = params;
-  //   // const { user, repository } = remote;
-  //   this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
-  //     const snapshot = ctx.stepMap['CREATE_DOC_SNAPSHOT'].data;
-  //     const res = await this._writer.writePosts(snapshot, { postsDir: this._postsDir, remoteDir: this._remoteDir, imagesDir: this._imagesDir });
-  //     const step = 'REFRESH_DOC_POSTS';
-  //     ctx.steps.push(step);
-  //     ctx.stepMap[step] = {
-  //       step,
-  //       success: true,
-  //       data: res
-  //     }
-  //     await next();
-  //   });
-  // }
 
 }
