@@ -122,6 +122,5 @@ export async function createDocSnapshot(params: {
   const snapshotPath = path.join(snapshotDir, `${Date.now()}.json`);
   makeFullDir(snapshotDir)
   writeJson(snapshotPath, snapshot);
-  const step = 'CREATE_DOC_SNAPSHOT';
   return { snapshot }
 }

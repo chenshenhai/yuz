@@ -146,9 +146,7 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
         snapshotDir: this._snapshotDir,
         reader: this._reader,
         checkLocalDocData: checkData as TypeTaskDataCheckLocalDoc,
-      })
-
-      
+      });      
       const step = 'CREATE_DOC_SNAPSHOT';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
