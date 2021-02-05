@@ -5,9 +5,10 @@ import fs from 'fs';
 import md5 from 'md5';
 import { loadGitbookList } from './loaders';
 import { readRepoListInfo } from '../util/github';
-import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapshot, TypeDiffDocSnapshot} from '../types';
+import { TypeReader, TypeReadDocType, TypeReadList, TypeReadItem, TypeGithubFileInfo, TypeDocSnapshot } from '../types';
 import { getMaxNumDirName, getMaxNumFileName, readJson } from './../util/file';
 import { parseImageRelativeUrl } from './../util/markdown';
+import { TypeGithubRepoCompareItem } from './../types/github';
 
 export class Reader extends EventEmitter implements TypeReader  {
 
@@ -15,8 +16,17 @@ export class Reader extends EventEmitter implements TypeReader  {
     super();
   }
   
-  async createSnapshot(baseDir: string, opts: { type: TypeReadDocType, name: string, sha: string }): Promise<TypeDocSnapshot> {
-    const { name, sha } = opts;
+  async createSnapshot(
+    baseDir: string,
+    opts: { type: TypeReadDocType, name: string, sha: string, updatedFiles: TypeGithubRepoCompareItem[] }
+  ): Promise<TypeDocSnapshot> {
+    const { name, sha, updatedFiles } = opts;
+    const compareMap: { [key: string]: TypeGithubRepoCompareItem } = {};
+    updatedFiles.forEach((item) => {
+      const itemPath = path.join(name, item.filename);
+      compareMap[itemPath] = item;
+    });
+
     const docList: TypeReadList = await this.readDocList(baseDir, opts);
     const imageList = await this.readImageList(baseDir, docList);
     const now = Date.now();
@@ -29,30 +39,40 @@ export class Reader extends EventEmitter implements TypeReader  {
     docList.forEach((item) => {
       const docPath = path.join(name, item.path);
       const id = md5(path.join(name, item.path));
-      let status: 'NOT_EXISTED' | 'EXISTED' = 'NOT_EXISTED';
-      if (fs.existsSync(item.absolutePath) && fs.statSync(item.absolutePath).isFile()) {
-        status = 'EXISTED';
-        snapshot.docMap[id] = {
-          id,
-          name: item.name,
-          path: docPath,
-          status,
+      let status: TypeGithubRepoCompareItem['status'] = 'unchanged';
+      let previousPath: string|null|undefined = null;
+      if (compareMap[docPath]) {
+        status = compareMap[docPath].status;
+        if (typeof compareMap[docPath].previous_filename === 'string') {
+          previousPath = compareMap[docPath].previous_filename;
         }
+      }
+      snapshot.docMap[id] = {
+        id,
+        name: item.name,
+        path: docPath,
+        status,
+        previousPath,
       }
     });
 
     imageList.forEach((item) => {
       const imgPath = path.join(name, item.path);
       const id = md5(path.join(name, item.path));
-      let status: 'NOT_EXISTED' | 'EXISTED' = 'NOT_EXISTED';
-      if (fs.existsSync(item.absolutePath) && fs.statSync(item.absolutePath).isFile()) {
-        status = 'EXISTED';
-        snapshot.imageMap[id] = {
-          id,
-          name: item.name,
-          path: imgPath,
-          status,
+      let status: TypeGithubRepoCompareItem['status'] = 'unchanged';
+      let previousPath: string|null|undefined = null;
+      if (compareMap[imgPath]) {
+        status = compareMap[imgPath].status;
+        if (typeof compareMap[imgPath].previous_filename === 'string') {
+          previousPath = compareMap[imgPath].previous_filename;
         }
+      }
+      snapshot.imageMap[id] = {
+        id,
+        name: item.name,
+        path: imgPath,
+        status,
+        previousPath,
       }
     });
 
@@ -148,50 +168,5 @@ export class Reader extends EventEmitter implements TypeReader  {
     return result;
   }
 
-  async diffSnapshot(before: TypeDocSnapshot|null, after: TypeDocSnapshot): Promise<TypeDiffDocSnapshot> {
-    const diff: TypeDiffDocSnapshot = {
-      docMap: {},
-      imageMap: {},
-    };
-    diff.docMap = await this._diffSnapshotMap(before?.docMap, after.docMap);
-    diff.imageMap = await this._diffSnapshotMap(before?.imageMap, after.imageMap);
-  
-    return diff;
-  }
-
-  async _diffSnapshotMap(
-    before: TypeDocSnapshot['docMap'] | TypeDocSnapshot['imageMap'] | undefined,
-    after: TypeDocSnapshot['docMap'] | TypeDocSnapshot['imageMap']
-  ): Promise<TypeDiffDocSnapshot['docMap'] | TypeDiffDocSnapshot['imageMap']> {
-    
-    const beforeIds = Object.keys(before || {});
-    const afterIds = Object.keys(after);
-    const diffMap: TypeDiffDocSnapshot['docMap'] | TypeDiffDocSnapshot['imageMap'] = {}
-
-    // beforeIds.forEach((id: string) => {
-    //   if (after[id] && before) {
-    //     if(after[id].lastTime > before[id].lastTime) {
-    //       if (after[id].status === 'EXISTED') {
-    //         diffMap[id] = { status: 'EDITED' };
-    //       } else {
-    //         diffMap[id] = { status: 'DELETED' };
-    //       }
-    //     }
-    //   } else {
-    //     diffMap[id] = { status: 'DELETED' };
-    //   }
-    // });
-
-    // afterIds.forEach((id: string) => {
-    //   if (before && before[id]) {
-    //     if (before[id].status === 'NOT_EXISTED') {
-    //       diffMap[id] = { status: 'CREATED' };
-    //     }
-    //   } else {
-    //     diffMap[id] = { status: 'CREATED' };
-    //   }
-    // });
-    return diffMap;
-  }
 }
 

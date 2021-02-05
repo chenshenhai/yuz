@@ -14,11 +14,9 @@ import { Writer } from './writer';
 
 
 export type TypeTaskDataCheckLocalDoc = {
-  isUpdated: boolean;
-  isExisted: boolean;
-  isModifedAll: boolean;
+  isUpdateAll: boolean;
+  updatedFiles: TypeGithubRepoCompareItem[];
   lastestSHA: null|string;
-  modifiedFiles: TypeGithubRepoCompareItem[];
 }
 
 export async function checkLocalDoc(params: {
@@ -30,32 +28,26 @@ export async function checkLocalDoc(params: {
 }) : Promise<TypeTaskDataCheckLocalDoc> {
   const { owner, repo, reader, remoteDir, snapshotDir } = params;
   const data: TypeTaskDataCheckLocalDoc = {
-    isUpdated: false,
-    isExisted: false,
-    isModifedAll: true,
+    isUpdateAll: true,
     lastestSHA: null,
-    modifiedFiles: []
+    updatedFiles: []
   };
   const localDir = path.join(remoteDir, 'github', owner, repo);
   const snapshot = await reader.readLastSnapshot(snapshotDir);
+  let isExisted: boolean = false;
   if (isDirExited(localDir) && snapshot && typeof snapshot.sha === 'string') {
-    data.isExisted = true;
+    isExisted = true;
   }
 
   const lastestSHA = await getRepoLastestCommitSHA({ owner, repo });
   data.lastestSHA = lastestSHA;
-  if (data.isExisted === true) {
-    data.isModifedAll = false;
+  if (isExisted === true) {
+    data.isUpdateAll = false;
     if (snapshot && snapshot.sha && lastestSHA && lastestSHA !== snapshot?.sha) {
       const compareFiles: TypeGithubRepoCompareItem[] = await compareRepoCommits({ owner, repo, beforeCommit: snapshot?.sha, afterCommit: lastestSHA });
-      data.modifiedFiles = compareFiles;
+      data.updatedFiles = compareFiles;
     }
   }
-
-  if (data.isModifedAll === true || data.modifiedFiles.length > 0) {
-    data.isUpdated = true;
-  }
-  
   return data;
 }
 
@@ -78,23 +70,26 @@ export async function loadRemoteDoc(params: {
     needLoadRemote: false,
   };
   
-  if (checkData?.isUpdated === true && typeof lastestSHA === 'string') {
-    data.needLoadRemote = true;
-    const localDir = path.join(remoteDir, 'github', owner, repo);
-    const saveCacheDir = path.join(remoteDir, 'github', '.cache', owner, repo);
-    const saveCachePath = path.join(saveCacheDir, `${lastestSHA}.zip`);
-    if (!(fs.existsSync(saveCachePath) && fs.statSync(saveCachePath).isFile())) {
-      await downloadRepoZip({ owner, repo, ref: lastestSHA }, { savePath: saveCachePath });
+  if (typeof lastestSHA === 'string') {
+    // TODO
+    if (checkData?.isUpdateAll === true || (Array.isArray(checkData.updatedFiles) && checkData.updatedFiles.length > 0)) {
+      data.needLoadRemote = true;
+      const localDir = path.join(remoteDir, 'github', owner, repo);
+      const saveCacheDir = path.join(remoteDir, 'github', '.cache', owner, repo);
+      const saveCachePath = path.join(saveCacheDir, `${lastestSHA}.zip`);
+      if (!(fs.existsSync(saveCachePath) && fs.statSync(saveCachePath).isFile())) {
+        await downloadRepoZip({ owner, repo, ref: lastestSHA }, { savePath: saveCachePath });
+      }
+      removeFullDir(localDir);
+      await unzip(saveCachePath, path.join(saveCacheDir, lastestSHA));
+      makeFullDir(localDir);
+      fs.renameSync(path.join(saveCacheDir, lastestSHA, `${owner}-${repo}-${lastestSHA.substr(0, 7)}`), localDir);
+    } else if (Array.isArray(checkData.updatedFiles) && checkData.updatedFiles.length > 0) {
+      // TODO
     }
-
-    removeFullDir(localDir);
-    await unzip(saveCachePath, path.join(saveCacheDir, lastestSHA));
-    makeFullDir(localDir);
-    fs.renameSync(path.join(saveCacheDir, lastestSHA, `${owner}-${repo}-${lastestSHA.substr(0, 7)}`), localDir);
   }
   return data;
 }
-
 
 
 export async function createDocSnapshot(params: {
@@ -115,7 +110,7 @@ export async function createDocSnapshot(params: {
   const lastestSHA = checkData?.lastestSHA as string;
   const localPath = path.join(params.remoteDir, 'github', owner, repo);
   const snapshot = await reader.createSnapshot(
-    localPath, { type: docType, name: `github/${owner}/${repo}`, sha: lastestSHA }
+    localPath, { type: docType, name: `github/${owner}/${repo}`, sha: lastestSHA, updatedFiles: checkData.updatedFiles }
   );
   const dateList = getNowDateList();
   const snapshotDir = path.join(params.snapshotDir, ...dateList);

@@ -7,7 +7,8 @@ export type TypeDocSnapshot = {
       id: string; // path md5 uuid
       name: string;
       path: string;
-      status: 'EXISTED' | 'NOT_EXISTED'
+      previousPath?: string|null;
+      status: 'modified' | 'added' | 'removed' | 'renamed' | 'unchanged',
     }
   }
   imageMap: {
@@ -15,21 +16,9 @@ export type TypeDocSnapshot = {
       id: string; // path md5 uuid
       name?: string;
       path: string;
-      status: 'EXISTED' | 'NOT_EXISTED';
+      previousPath?: string|null;
+      status: 'modified' | 'added' | 'removed' | 'renamed' | 'unchanged',
     }
   };
 }
 
-
-export type TypeDiffDocSnapshot = {
-  docMap: {
-    [id: string]: {
-      status: 'CREATED' | 'EDITED' | 'DELETED'
-    }
-  },
-  imageMap: {
-    [id: string]: {
-      status: 'CREATED' | 'EDITED' | 'DELETED'
-    }
-  }
-}

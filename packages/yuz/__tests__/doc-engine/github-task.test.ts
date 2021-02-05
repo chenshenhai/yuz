@@ -23,18 +23,15 @@ describe('src/doc-engine/github-task', function () {
       reader: new Reader(),
     }).then((data) => {
       should(data).be.Object;
-      should(data.isExisted).be.Boolean;
-      should(data.isModifedAll).be.Boolean;
-      should(data.isUpdated).be.Boolean;
+      should(data.isUpdateAll).be.Boolean;
       should(data.lastestSHA).be.String;
-      should(data.modifiedFiles).be.Array;
+      should(data.updatedFiles).be.Array;
       done();
     }).catch(done);
   });
 
 
   it('loadRemoteDoc', function (done) {
-
     this.timeout(60000 * 3);
     const baseDir = path.join(__dirname, '..', '__assets__', 'dist', 'doc-engine');
     removeFileOrDir(baseDir);
@@ -44,11 +41,9 @@ describe('src/doc-engine/github-task', function () {
       remoteDir: path.join(baseDir, 'remote'),
       snapshotDir: path.join(baseDir, 'snapshot'),
       checkLocalDocData: {
-        "isUpdated": true,
-        "isExisted": false,
-        "isModifedAll": true,
+        "isUpdateAll": true,
+        "updatedFiles": [],
         "lastestSHA": "e98545b466cca52b53915fd0eb0bbea39ebeda2d",
-        "modifiedFiles": []
       }
     }).then((data) => {
       should(data.needLoadRemote).be.deepEqual(true);
@@ -69,11 +64,27 @@ describe('src/doc-engine/github-task', function () {
       snapshotDir: path.join(baseDir, 'snapshot'),
       reader: new Reader(),
       checkLocalDocData: {
-        "isUpdated": true,
-        "isExisted": false,
-        "isModifedAll": true,
-        "lastestSHA": sha,
-        "modifiedFiles": []
+        "isUpdateAll": true,
+        "updatedFiles": [
+          {
+            filename: 'docs/001.md',
+            status: 'added',
+          },
+          {
+            filename: 'docs/002.md',
+            status: 'renamed',
+            previous_filename: 'docs/102.md',
+          },
+          {
+            filename: 'docs/101.md',
+            status: 'removed',
+          },
+          {
+            filename: 'images/yuz-logo.png',
+            status: 'added',
+          }
+        ],
+        "lastestSHA": "e98545b466cca52b53915fd0eb0bbea39ebeda2d",
       }
     }).then((data) => {
       should(data.snapshot.sha).be.deepEqual(sha);

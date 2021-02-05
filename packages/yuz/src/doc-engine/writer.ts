@@ -3,9 +3,10 @@ import compose from 'koa-compose';
 import path from 'path';
 import fs from 'fs';
 import { loadGitbookList } from './loaders';
-import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult, TypeDocSnapshot, TypeDiffDocSnapshot } from '../types';
+import { TypeWriter, TypeReadDocType, TypeWriteStatus, TypeWriteList, TypeWriteResult, TypeDocSnapshot } from '../types';
 import { DocStorage, ImageStorage } from '../storage';
-import { removeFullDir } from './../util/file';
+import { removeFileOrDir, removeFullDir } from './../util/file';
+import md5 from 'md5';
 
 export class Writer extends EventEmitter implements TypeWriter  {
 
@@ -65,7 +66,6 @@ export class Writer extends EventEmitter implements TypeWriter  {
 
   async writeAssets(
     snapshot: TypeDocSnapshot,
-    diffSnapshot: TypeDiffDocSnapshot, 
     opts: { postsDir: string, remoteDir: string, imagesDir: string, }
   ): Promise<TypeWriteResult> {
     if (this._status === 'WRITING') {
@@ -82,13 +82,13 @@ export class Writer extends EventEmitter implements TypeWriter  {
     };
 
     // write docs
-    const docIds = Object.keys(diffSnapshot.docMap);
+    const docIds = Object.keys(snapshot.docMap);
     docIds.forEach((id) => {
       const doc = snapshot.docMap[id];
       const absoluteRemotePath = path.join(opts.remoteDir, doc.path)
       try {
 
-        if (['CREATED', 'EDITED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {
+        if (doc.status === 'added') {
           const content = fs.readFileSync(absoluteRemotePath, { encoding: 'utf8' });
           docStorage.createItem({
             uuid: doc.id,
@@ -96,8 +96,28 @@ export class Writer extends EventEmitter implements TypeWriter  {
             content: content,
             creator: '',
           });
-        } else if (['DELETED'].indexOf(diffSnapshot?.docMap[id]?.status) >= 0) {
+        } else if (doc.status === 'modified') {
+          const content = fs.readFileSync(absoluteRemotePath, { encoding: 'utf8' });
+          docStorage.updateItem({
+            uuid: doc.id,
+            name: doc.name,
+            content: content,
+            creator: '',
+          });
+        } else if (doc.status === 'removed') {
           docStorage.deleteItem(id);
+        } else if (doc.status === 'renamed') {
+          const content = fs.readFileSync(absoluteRemotePath, { encoding: 'utf8' });
+          docStorage.createItem({
+            uuid: doc.id,
+            name: doc.name,
+            content: content,
+            creator: '',
+          });
+          if (typeof doc.previousPath === 'string') {
+            const previusId = md5(doc.previousPath);
+            docStorage.deleteItem(previusId);
+          }
         }
         result.logs.push({
           status: 'SUCCESS',
@@ -116,21 +136,24 @@ export class Writer extends EventEmitter implements TypeWriter  {
 
     // move images
     // write docs
-    const imageIds = Object.keys(diffSnapshot.imageMap);
+    const imageIds = Object.keys(snapshot.imageMap);
     imageIds.forEach((id) => {
       const image = snapshot.imageMap[id];
       const extname = path.extname(image.path);
       const absolutePath = path.join(opts.imagesDir, `${image.id}${extname}`)
       const absoluteRemotePath = path.join(opts.remoteDir, image.path);
       try {
-        if (['CREATED', 'EDITED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {
-          // TODO
-          // fs.copyFileSync(absoluteRemotePath, absolutePath)
-          // docStorage.createItem({
-          // });
-        } else if (['DELETED'].indexOf(diffSnapshot?.imageMap[id]?.status) >= 0) {
-          // TODO
-          // fs.unlinkSync(absolutePath);
+        if (image.status === 'added') {
+          fs.renameSync(absoluteRemotePath, absolutePath);
+        } else if (image.status === 'removed') {
+          removeFileOrDir(absolutePath);
+        } else if (image.status === 'modified') {
+          removeFileOrDir(absolutePath);
+          fs.renameSync(absoluteRemotePath, absolutePath);
+        } else if (image.status === 'renamed' && typeof image.previousPath === 'string') {
+          const previousPath = path.join(opts.imagesDir, image.previousPath)
+          removeFileOrDir(previousPath);
+          fs.renameSync(absoluteRemotePath, absolutePath);
         }
         result.logs.push({
           status: 'SUCCESS',
