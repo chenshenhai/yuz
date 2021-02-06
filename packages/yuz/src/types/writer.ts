@@ -25,8 +25,8 @@ export type TypeWriteResult = {
 }
 
 export interface TypeWriter extends EventEmitter {
-  writePosts(
+  writeAssets(
     snapshot: TypeDocSnapshot,
-    opts: { postsDir: string, remoteDir: string }
+    opts: { postsDir: string, remoteDir: string, imagesDir: string, }
   ): Promise<TypeWriteResult>
 }

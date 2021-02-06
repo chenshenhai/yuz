@@ -119,3 +119,18 @@ export async function createDocSnapshot(params: {
   writeJson(snapshotPath, snapshot);
   return { snapshot }
 }
+
+
+
+export async function rewriteDocFiles(params: {
+  remoteDir: string,
+  postsDir: string,
+  imagesDir: string,
+  snapshotDir: string,
+  writer: Writer,
+  snapshot: TypeDocSnapshot,
+}): Promise<{ success: boolean }> {
+  const { postsDir, remoteDir, imagesDir, writer, snapshot, } = params;
+  await writer.writeAssets(snapshot,  { postsDir, remoteDir, imagesDir, })
+  return { success: true }
+}
