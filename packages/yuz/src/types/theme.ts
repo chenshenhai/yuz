@@ -15,4 +15,5 @@ export type TypeDevThemeOptions = {
   // distDir: string;
   // srcDir: string;
   baseDir: string;
+  type?: 'admin' | 'portal'; // default portal
 }

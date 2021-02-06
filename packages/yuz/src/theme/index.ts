@@ -3,8 +3,9 @@ import path from 'path';
 // import withLess from '@zeit/next-less';
 import nextBuild from 'next/dist/build';
 import { ThemeServer } from './../server';
-import { TypeBuildThemeOptions, TypeDevThemeOptions, TypeThemeConfig } from './../types';
+import { TypeBuildThemeOptions, TypeDevThemeOptions, TypeThemeConfig, TypeServerRequest } from './../types';
 import { loadThemeConfig, createNextConfig } from './config';
+import { adminApiHandler, portalApiHandler } from './../server/api';
 
 
 export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
@@ -25,11 +26,16 @@ export function buildThemeAsync(opts: TypeBuildThemeOptions): Promise<void> {
 
 
 export function devThemeAsync(opts: TypeDevThemeOptions): Promise<number> {
-  const { port, baseDir } = opts;
+  const { port, baseDir, type } = opts;
   const srcDir = path.join(baseDir, 'src');
   const distDir = path.join('..', 'dist');
   const themeConfig = loadThemeConfig(baseDir);
   const nextConfig = createNextConfig(themeConfig);
+  let apiHandler = portalApiHandler;
+  if (type === 'admin') {
+    apiHandler = adminApiHandler;
+  }
+
   const server = new ThemeServer({
     dev: true,
     port: port,
@@ -37,7 +43,8 @@ export function devThemeAsync(opts: TypeDevThemeOptions): Promise<number> {
     theme: {
       distDir,
       srcDir,
-    }
+    },
+    apiHandler: apiHandler,
   });
   return server.start();
 }

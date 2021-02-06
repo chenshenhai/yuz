@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { EventEmitter } from 'events';
 import compose from 'koa-compose';
-import { TypeDocEngine, TypeDocEngineResult, TypeDocEngineOptions, TypeDocEngineStep, TypeDocEngineProcessParams, TypeDocSnapshot, TypeGithubRepoCompareItem, TypeReadDocType } from '../types';
+import { TypeDocSnapshot, TypeGithubRepoCompareItem, TypeReadDocType, TypeWriteResult } from '../types';
 import { makeFullDir, removeFullDir, writeJson, isFileExited, isDirExited } from '../util/file';
 import { unzip } from './../util/zip';
 
@@ -102,20 +102,28 @@ export async function createDocSnapshot(params: {
   checkLocalDocData: TypeTaskDataCheckLocalDoc,
   // loadRemoteDocData: TypeTaskDataLoadRemoteDoc,
 }): Promise<{snapshot: TypeDocSnapshot}> {
-  const { owner, repo, docType, remoteDir, reader } = params;
+  const { owner, repo, docType, reader, snapshotDir } = params;
   
   const checkData = params.checkLocalDocData;
   // const loadData = params.loadRemoteDocData;
 
   const lastestSHA = checkData?.lastestSHA as string;
   const localPath = path.join(params.remoteDir, 'github', owner, repo);
+  const lastestSnapshot = await reader.readLastSnapshot(snapshotDir);
   const snapshot = await reader.createSnapshot(
-    localPath, { type: docType, name: `github/${owner}/${repo}`, sha: lastestSHA, updatedFiles: checkData.updatedFiles }
+    localPath, 
+    {
+      type: docType,
+      name: `github/${owner}/${repo}`,
+      sha: lastestSHA,
+      updatedFiles: checkData.updatedFiles,
+      isFirst: lastestSnapshot === null
+    }
   );
   const dateList = getNowDateList();
-  const snapshotDir = path.join(params.snapshotDir, ...dateList);
-  const snapshotPath = path.join(snapshotDir, `${Date.now()}.json`);
-  makeFullDir(snapshotDir)
+  const snapshotFileDir = path.join(params.snapshotDir, ...dateList);
+  const snapshotPath = path.join(snapshotFileDir, `${Date.now()}.json`);
+  makeFullDir(snapshotFileDir)
   writeJson(snapshotPath, snapshot);
   return { snapshot }
 }
@@ -129,8 +137,8 @@ export async function rewriteDocFiles(params: {
   snapshotDir: string,
   writer: Writer,
   snapshot: TypeDocSnapshot,
-}): Promise<{ success: boolean }> {
+}): Promise<{ success: boolean, result: TypeWriteResult }> {
   const { postsDir, remoteDir, imagesDir, writer, snapshot, } = params;
-  await writer.writeAssets(snapshot,  { postsDir, remoteDir, imagesDir, })
-  return { success: true }
+  const result = await writer.writeAssets(snapshot,  { postsDir, remoteDir, imagesDir, })
+  return { success: true, result }
 }

@@ -11,7 +11,7 @@ import { getRepoLastestCommitSHA, getRepoInfo, compareRepoCommits, downloadRepoZ
 import { getNowDateList } from './../util/date';
 import { Reader } from './reader';
 import { Writer } from './writer';
-import { checkLocalDoc, loadRemoteDoc, createDocSnapshot, TypeTaskDataCheckLocalDoc } from './github-task';
+import { checkLocalDoc, loadRemoteDoc, createDocSnapshot, rewriteDocFiles,  TypeTaskDataCheckLocalDoc } from './github-task';
 
 
 export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
@@ -62,6 +62,7 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     this._pushTaskCheckLoadDoc(params);
     this._pushTaskLoadRemoteDoc(params);
     this._pushTaskCreateDocSnapshot(params);
+    this._pushTaskrRewriteDocFiles(params);
 
     const result = {
       steps: [],
@@ -132,8 +133,6 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
     this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
 
       const checkData = ctx.stepMap['CHECK_LOCAL_DOC']?.data;
-      const loadData = ctx.stepMap['LOAD_REMOTE_DOC']?.data;
-      
       const data = await createDocSnapshot({
         owner,
         repo,
@@ -144,6 +143,28 @@ export class GithubDocEngine extends EventEmitter implements TypeDocEngine {
         checkLocalDocData: checkData as TypeTaskDataCheckLocalDoc,
       });      
       const step = 'CREATE_DOC_SNAPSHOT';
+      ctx.steps.push(step);
+      ctx.stepMap[step] = {
+        step,
+        success: true,
+        data: data
+      }
+      await next();
+    });
+  }
+
+  private async _pushTaskrRewriteDocFiles(params: TypeDocEngineProcessParams) {
+    this._tasks.push(async (ctx: TypeDocEngineResult, next: Function) => {
+      const { snapshot } = ctx.stepMap['CREATE_DOC_SNAPSHOT']?.data;
+      const data = await rewriteDocFiles({
+        remoteDir: this._remoteDir,
+        postsDir: this._postsDir,
+        imagesDir: this._imagesDir,
+        snapshotDir: this._snapshotDir,
+        writer: this._writer,
+        snapshot,
+      });      
+      const step = 'REWRITE_DOC_FILES';
       ctx.steps.push(step);
       ctx.stepMap[step] = {
         step,

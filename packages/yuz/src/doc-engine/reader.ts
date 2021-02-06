@@ -18,9 +18,9 @@ export class Reader extends EventEmitter implements TypeReader  {
   
   async createSnapshot(
     baseDir: string,
-    opts: { type: TypeReadDocType, name: string, sha: string, updatedFiles: TypeGithubRepoCompareItem[] }
+    opts: { type: TypeReadDocType, name: string, sha: string, updatedFiles: TypeGithubRepoCompareItem[], isFirst: boolean }
   ): Promise<TypeDocSnapshot> {
-    const { name, sha, updatedFiles } = opts;
+    const { name, sha, updatedFiles, isFirst } = opts;
     const compareMap: { [key: string]: TypeGithubRepoCompareItem } = {};
     updatedFiles.forEach((item) => {
       const itemPath = path.join(name, item.filename);
@@ -39,7 +39,7 @@ export class Reader extends EventEmitter implements TypeReader  {
     docList.forEach((item) => {
       const docPath = path.join(name, item.path);
       const id = md5(path.join(name, item.path));
-      let status: TypeGithubRepoCompareItem['status'] = 'unchanged';
+      let status: TypeGithubRepoCompareItem['status'] = isFirst === true ? 'added' : 'unchanged';
       let previousPath: string|null|undefined = null;
       if (compareMap[docPath]) {
         status = compareMap[docPath].status;
@@ -59,7 +59,7 @@ export class Reader extends EventEmitter implements TypeReader  {
     imageList.forEach((item) => {
       const imgPath = path.join(name, item.path);
       const id = md5(path.join(name, item.path));
-      let status: TypeGithubRepoCompareItem['status'] = 'unchanged';
+      let status: TypeGithubRepoCompareItem['status'] = isFirst === true ? 'added' : 'unchanged';
       let previousPath: string|null|undefined = null;
       if (compareMap[imgPath]) {
         status = compareMap[imgPath].status;

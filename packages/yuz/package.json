@@ -9,7 +9,7 @@
     "cli:build": "node ./bin/yuz.js build ./example/theme",
     "test": "mocha -r ts-node/register --exit __tests__/**/*.test.ts",
     "test:local": "mocha -r ts-node/register --exit __tests__/**/*test.ts",
-    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/doc-engine/github-task.test.ts",
+    "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/doc-engine/index.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
     "build": "webpack -c scripts/webpack.base.config.js",
     "example:server": "ts-node example/server/index.ts",
