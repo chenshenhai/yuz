@@ -3,149 +3,89 @@ import fs from 'fs';
 import should from 'should';
 import 'mocha';
 import { Writer } from '../../src/doc-engine/writer';
-import { TypeDocSnapshot, TypeDiffDocSnapshot } from './../../src/types/snapshot';
-import { makeFullDir } from './../../src/util/file';
+import { TypeDocSnapshot } from './../../src/types/snapshot';
+import { makeFullDir, removeFileOrDir } from './../../src/util/file';
+
 
 const snapshot = {
-  "time": 1610204684602,
+  "sha": "e98545b466cca52b53915fd0eb0bbea39ebeda2d",
+  "time": 1612574613804,
   "docMap": {
-    "d95dac398c4d4d08472d8c10bb21aee9": {
-      "id": "d95dac398c4d4d08472d8c10bb21aee9",
+    "e4ee173c924b1f44d9bb8e87ae2152c4": {
+      "id": "e4ee173c924b1f44d9bb8e87ae2152c4",
       "name": "Readme",
-      "path": "gitub/yuzjs/example-gitbook/README.md",
-      "createTime": 1609046330000,
-      "lastTime": 1609079170000,
-      "status": "EXISTED"
+      "path": "github/yuzjs/example-gitbook/README.md",
+      "status": "added",
+      "previousPath": null
     },
-    "2cc1693b14521552f24b80c52f702c29": {
-      "id": "2cc1693b14521552f24b80c52f702c29",
+    "37fd9b58bdf92c104c16f589feedd76b": {
+      "id": "37fd9b58bdf92c104c16f589feedd76b",
       "name": "001",
-      "path": "gitub/yuzjs/example-gitbook/docs/001.md",
-      "createTime": 1609079170000,
-      "lastTime": 1610163286000,
-      "status": "EXISTED"
+      "path": "github/yuzjs/example-gitbook/docs/001.md",
+      "status": "added",
+      "previousPath": null
     },
-    "35ec97c56ff93a0eed3924d3bd22cba5": {
-      "id": "35ec97c56ff93a0eed3924d3bd22cba5",
+    "4a9d6a0e91b0e97e15cfcdf2a14cfd42": {
+      "id": "4a9d6a0e91b0e97e15cfcdf2a14cfd42",
       "name": "002",
-      "path": "gitub/yuzjs/example-gitbook/docs/002.md",
-      "createTime": 1609079170000,
-      "lastTime": 1610121443000,
-      "status": "EXISTED"
+      "path": "github/yuzjs/example-gitbook/docs/002.md",
+      "status": "added",
+      "previousPath": "docs/102.md"
     },
-    "4c1e2a90adfbcfafeb3627819464f4cc": {
-      "id": "4c1e2a90adfbcfafeb3627819464f4cc",
+    "f35b3b7b2ac72ca73b13725ee003ecbd": {
+      "id": "f35b3b7b2ac72ca73b13725ee003ecbd",
       "name": "101",
-      "path": "gitub/yuzjs/example-gitbook/docs/101.md",
-      "createTime": 1609079170000,
-      "lastTime": 1610121443000,
-      "status": "EXISTED"
+      "path": "github/yuzjs/example-gitbook/docs/101.md",
+      "status": "added",
+      "previousPath": null
     },
-    "3ffe33f832b29aa839fcad3cfd442b1b": {
-      "id": "3ffe33f832b29aa839fcad3cfd442b1b",
+    "7e34855c733598072207eff4ddc4e6fc": {
+      "id": "7e34855c733598072207eff4ddc4e6fc",
       "name": "102",
-      "path": "gitub/yuzjs/example-gitbook/docs/102.md",
-      "createTime": 1609079170000,
-      "lastTime": 1610163286000,
-      "status": "EXISTED"
+      "path": "github/yuzjs/example-gitbook/docs/102.md",
+      "status": "added",
+      "previousPath": null
     }
   },
   "imageMap": {
-    "d5c87e06b1bf2f2725b9141554a0f9dd": {
-      "id": "d5c87e06b1bf2f2725b9141554a0f9dd",
+    "52685f4d7fd1ca1b66cac3b3aefe8555": {
+      "id": "52685f4d7fd1ca1b66cac3b3aefe8555",
       "name": "",
-      "path": "gitub/yuzjs/example-gitbook/images/yuz-logo.png",
-      "createTime": 1609079170000,
-      "lastTime": 1609079170000,
-      "status": "EXISTED"
+      "path": "github/yuzjs/example-gitbook/images/yuz-logo.png",
+      "status": "added",
+      "previousPath": null
     }
   }
 } as TypeDocSnapshot;
 
-const diff = {
-  "docMap": {
-    "d95dac398c4d4d08472d8c10bb21aee9": {
-      "status": "CREATED"
-    },
-    "2cc1693b14521552f24b80c52f702c29": {
-      "status": "CREATED"
-    },
-    "35ec97c56ff93a0eed3924d3bd22cba5": {
-      "status": "CREATED"
-    },
-    "4c1e2a90adfbcfafeb3627819464f4cc": {
-      "status": "CREATED"
-    },
-    "3ffe33f832b29aa839fcad3cfd442b1b": {
-      "status": "CREATED"
-    }
-  },
-  "imageMap": {
-    "d5c87e06b1bf2f2725b9141554a0f9dd": {
-      "status": "CREATED"
-    }
-  }
-} as TypeDiffDocSnapshot;
-
 const testDir = path.join(__dirname, '..');
+const baseDir = path.join(testDir, '__assets__', 'dist');
 
 describe('src/doc-engine/writer', function () {
   it('Writer.write:gitbook', function (done) {
     this.timeout(60000 * 3);
-    const writerDir = path.join(testDir, '__assets__', 'dist', 'doc-engine',);
+    const writerDir = path.join(baseDir, 'doc-engine',);
     const remoteDir = path.join(writerDir, 'remote');
     const postsDir = path.join(writerDir, 'posts');
     const imagesDir = path.join(writerDir, 'images');
+
+    removeFileOrDir(postsDir);
+    removeFileOrDir(imagesDir);
 
     makeFullDir(postsDir);
     makeFullDir(imagesDir);
 
     const writer = new Writer();
-    writer.writeAssets(snapshot, diff, {
+    writer.writeAssets(snapshot, {
       postsDir: postsDir,
       imagesDir: imagesDir,
       remoteDir: remoteDir,
     }).then((res) => {
-      // console.log('writeAssets ======', res);
-      // TODO
-      should(1).be.deepEqual(1);
+      should(fs.existsSync(path.join(baseDir, 'posts', 'items', 'e', 'e4ee173c924b1f44d9bb8e87ae2152c4.json'))).be.equal(true);
+      should(fs.existsSync(path.join(baseDir, 'posts', 'items', '3', '37fd9b58bdf92c104c16f589feedd76b.json'))).be.equal(true);
+      should(fs.existsSync(path.join(baseDir, 'images', '5', '52685f4d7fd1ca1b66cac3b3aefe8555.png'))).be.equal(true);
       done();
     }).catch(done);
-
-
-    
-    // const reader = new Reader();
-    // 
-    // reader.readDocList(baseDir, { type: 'gitbook' }).then((list) => {
-    //   writer.writePosts(list, { storagePath: storageDir })
-    //   .then((result) => {
-    //     should(result).be.deepEqual({
-    //       "success": true,
-    //       "logs": [{
-    //         "status": "SUCCESS",
-    //         "path": path.join(baseDir, "README.md")
-    //       }, {
-    //         "status": "SUCCESS",
-    //         "path": path.join(baseDir, "./docs/001.md")
-    //       }, {
-    //         "status": "SUCCESS",
-    //         "path": path.join(baseDir, "./docs/002.md"),
-    //       }, {
-    //         "status": "SUCCESS",
-    //         "path": path.join(baseDir, "./docs/101.md"),
-    //       }, {
-    //         "status": "SUCCESS",
-    //         "path": path.join(baseDir, "./docs/102.md"),
-    //       }],
-    //       "hasError": true
-    //     });
-    //     done();
-    //   }).catch((err) => {
-    //     done();
-    //     throw err;
-    //   });
-    // });
-
    
   });
 });

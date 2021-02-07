@@ -7,8 +7,8 @@ export type TypeDocSnapshot = {
       id: string; // path md5 uuid
       name: string;
       path: string;
-      previousPath?: string|null;
       status: 'modified' | 'added' | 'removed' | 'renamed' | 'unchanged',
+      previousPath?: string|null;
     }
   }
   imageMap: {

@@ -40,7 +40,6 @@ export class Writer extends EventEmitter implements TypeWriter  {
       const doc = snapshot.docMap[id];
       const absoluteRemotePath = path.join(opts.remoteDir, doc.path)
       try {
-
         if (doc.status === 'added') {
           const content = fs.readFileSync(absoluteRemotePath, { encoding: 'utf8' });
           docStorage.createItem({
@@ -92,28 +91,42 @@ export class Writer extends EventEmitter implements TypeWriter  {
     const imageIds = Object.keys(snapshot.imageMap);
     imageIds.forEach((id) => {
       const image = snapshot.imageMap[id];
-      const extname = path.extname(image.path);
-      const absolutePath = path.join(opts.imagesDir, id[0],`${image.id}${extname}`)
       const absoluteRemotePath = path.join(opts.remoteDir, image.path);
 
-      makeFullDir(path.dirname(absolutePath));
       try {
         if (image.status === 'added') {
-          fs.renameSync(absoluteRemotePath, absolutePath);
+          imgStorage.createItem({
+            uuid: image.id,
+            name: image.name || '',
+            content: absoluteRemotePath,
+            creator: '',
+          })
         } else if (image.status === 'removed') {
-          removeFileOrDir(absolutePath);
+          imgStorage.deleteItem(image.id);
         } else if (image.status === 'modified') {
-          removeFileOrDir(absolutePath);
-          fs.renameSync(absoluteRemotePath, absolutePath);
+          imgStorage.deleteItem(image.id);
+          imgStorage.createItem({
+            uuid: image.id,
+            name: image.name || '',
+            content: absoluteRemotePath,
+            creator: '',
+          })
         } else if (image.status === 'renamed' && typeof image.previousPath === 'string') {
-          const previousPath = path.join(opts.imagesDir, image.previousPath)
-          removeFileOrDir(previousPath);
-          fs.renameSync(absoluteRemotePath, absolutePath);
+          if (typeof image.previousPath === 'string') {
+            const previusId = md5(image.previousPath);
+            imgStorage.deleteItem(previusId);
+          }
+          imgStorage.createItem({
+            uuid: image.id,
+            name: image.name || '',
+            content: absoluteRemotePath,
+            creator: '',
+          })
         }
         result.logs.push({
           status: 'SUCCESS',
           path: absoluteRemotePath,
-          info: absolutePath
+          // info: absolutePath
         });
       } catch (err) {
         result.hasError = true;
