@@ -81,9 +81,9 @@ describe('src/doc-engine/writer', function () {
       imagesDir: imagesDir,
       remoteDir: remoteDir,
     }).then((res) => {
-      should(fs.existsSync(path.join(baseDir, 'posts', 'items', 'e', 'e4ee173c924b1f44d9bb8e87ae2152c4.json'))).be.equal(true);
-      should(fs.existsSync(path.join(baseDir, 'posts', 'items', '3', '37fd9b58bdf92c104c16f589feedd76b.json'))).be.equal(true);
-      should(fs.existsSync(path.join(baseDir, 'images', '5', '52685f4d7fd1ca1b66cac3b3aefe8555.png'))).be.equal(true);
+      should(fs.existsSync(path.join(postsDir, 'items', 'e', 'e4ee173c924b1f44d9bb8e87ae2152c4.json'))).be.equal(true);
+      should(fs.existsSync(path.join(postsDir, 'items', '3', '37fd9b58bdf92c104c16f589feedd76b.json'))).be.equal(true);
+      should(fs.existsSync(path.join(imagesDir, 'items', '5', '52685f4d7fd1ca1b66cac3b3aefe8555.png'))).be.equal(true);
       done();
     }).catch(done);
    
