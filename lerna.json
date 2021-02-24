@@ -3,7 +3,8 @@
   "packages": [
     "packages/yuz",
     "packages/yuz-api",
-    "packages/yuz-theme-admin"
+    "packages/yuz-theme-admin",
+    "packages/yuz-theme-portal"
   ],
   "version": "0.0.1-alpha.2"
 }
