@@ -21,5 +21,9 @@ export function createNextConfig(config: TypeThemeConfig): {[key: string]: any} 
     // }
   }
 
-  return nextConfig;
+  return {...nextConfig, ...{
+    future: {
+      webpack5: true,
+    },
+  }};
 }

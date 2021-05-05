@@ -11,7 +11,7 @@
     "test:local": "mocha -r ts-node/register --exit __tests__/**/*test.ts",
     "test:_": "nyc --reporter=html --reporter=text mocha -r ts-node/register --exit __tests__/doc-engine/writer.test.ts",
     "dev": "webpack --watch --config scripts/webpack.dev.config.js",
-    "build": "webpack -c scripts/webpack.base.config.js",
+    "build": "webpack -c scripts/webpack.prod.config.js",
     "example:server": "ts-node example/server/index.ts",
     "example:theme:build": "ts-node example/theme_build/index.ts",
     "example:theme:dev": "ts-node example/theme_dev/index.ts",

@@ -33,7 +33,10 @@ export class ThemeServer implements TypeThemeServer {
           ...opts.nextConfig || {},
           ...{
             distDir: nextDistDir,
-            basePath: '/page'
+            basePath: '/page',
+            future: {
+              webpack5: true,
+            },
           }
         }
       });

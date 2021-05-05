@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "init": "lerna bootstrap --npm-client=cnpm",
     "test": "lerna bootstrap --no-ci && lerna run build && lerna run test",
     "test:yuz": "lerna bootstrap --no-ci && lerna run build && lerna run --scope yuz test",
     "test:local": "lerna bootstrap --npm-client=cnpm && lerna run build && lerna run test:local"
